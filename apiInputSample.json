@@ -1,0 +1,896 @@
+{
+    "localName": "HOME PARK HOTEL",
+    "globalName": "HOME PARK HOTEL",
+    "type": "HOTEL",
+    "address": "Hẻm 124 Trần Hưng Đạo Street, Dương Đông Ward, Phú Quốc City, Kiên Giang Province",
+    "star": "2",
+    "serviceScope": "LOCAL",
+    "area": "Phú Quốc",
+    "keyFeatures": [
+        "Bữa sáng hàng ngày",
+        "Wifi miễn phí",
+        "2 chai nước lọc/ngày",
+        "Cà phê & trà",
+        "Đón tiễn sân bay (có điều kiện)",
+        "Sử dụng hồ bơi, gym, sauna"
+    ],
+    "code": "HOME_PARK_HOTEL",
+    "seasons": [
+        {
+            "name": "Mùa thấp điểm - Ngày thường",
+            "type": "SEASON",
+            "season": "LOW",
+            "day": {
+                "name": "WEEKDAY",
+                "dayOfWeek": [
+                    1,
+                    2,
+                    3,
+                    4
+                ]
+            },
+            "eventData": null,
+            "periods": [
+                {
+                    "startDate": "2025-03-01T00:00:00Z",
+                    "endDate": "2026-01-01T23:59:59Z"
+                }
+            ],
+            "description": "Tháng 3, 4, 5, 9, 10",
+            "createdBy": "system"
+        },
+        {
+            "name": "Mùa thấp điểm - Cuối tuần",
+            "type": "SEASON",
+            "season": "LOW",
+            "day": {
+                "name": "WEEKEND",
+                "dayOfWeek": [
+                    5
+                ]
+            },
+            "eventData": null,
+            "periods": [
+                {
+                    "startDate": "2025-03-01T00:00:00Z",
+                    "endDate": "2026-01-01T23:59:59Z"
+                }
+            ],
+            "description": "Tháng 3, 4, 5, 9, 10",
+            "createdBy": "system"
+        },
+        {
+            "name": "Mùa cao điểm - Ngày thường",
+            "type": "SEASON",
+            "season": "HIGH",
+            "day": {
+                "name": "WEEKDAY",
+                "dayOfWeek": [
+                    0,
+                    1,
+                    2,
+                    3,
+                    4
+                ]
+            },
+            "eventData": null,
+            "periods": [
+                {
+                    "startDate": "2025-01-01T00:00:00Z",
+                    "endDate": "2026-01-01T23:59:59Z"
+                }
+            ],
+            "description": "Tháng 1, 2, 6, 7, 8, 11, 12",
+            "createdBy": "system"
+        },
+        {
+            "name": "Mùa cao điểm - Cuối tuần",
+            "type": "SEASON",
+            "season": "HIGH",
+            "day": {
+                "name": "WEEKEND",
+                "dayOfWeek": [
+                    5,
+                    6
+                ]
+            },
+            "eventData": null,
+            "periods": [
+                {
+                    "startDate": "2025-01-01T00:00:00Z",
+                    "endDate": "2026-01-01T23:59:59Z"
+                }
+            ],
+            "description": "Tháng 1, 2, 6, 7, 8, 11, 12",
+            "createdBy": "system"
+        },
+        {
+            "name": "Tết Dương lịch",
+            "type": "EVENT",
+            "season": "PEAK",
+            "day": {
+                "name": "WEEKDAY",
+                "dayOfWeek": [
+                    4
+                ]
+            },
+            "eventData": {
+                "name": "Tết Dương lịch",
+                "startDate": "2026-01-01T00:00:00Z",
+                "endDate": "2026-01-01T23:59:59Z",
+                "description": "Phụ thu 100000"
+            },
+            "periods": [
+                {
+                    "startDate": "2026-01-01T00:00:00Z",
+                    "endDate": "2026-01-01T23:59:59Z"
+                }
+            ],
+            "description": "Tết Dương lịch - Phụ thu 100000",
+            "createdBy": "system"
+        },
+        {
+            "name": "Tết Dương lịch",
+            "type": "EVENT",
+            "season": "PEAK",
+            "day": {
+                "name": "WEEKDAY",
+                "dayOfWeek": [
+                    3
+                ]
+            },
+            "eventData": {
+                "name": "Tết Dương lịch",
+                "startDate": "2025-12-31T00:00:00Z",
+                "endDate": "2025-12-31T23:59:59Z",
+                "description": "Phụ thu 100000"
+            },
+            "periods": [
+                {
+                    "startDate": "2025-12-31T00:00:00Z",
+                    "endDate": "2025-12-31T23:59:59Z"
+                }
+            ],
+            "description": "Tết Dương lịch - Phụ thu 100000",
+            "createdBy": "system"
+        },
+        {
+            "name": "Tết Âm lịch",
+            "type": "EVENT",
+            "season": "PEAK",
+            "day": {
+                "name": "WEEKDAY",
+                "dayOfWeek": [
+                    1,
+                    2,
+                    3,
+                    4,
+                    5
+                ]
+            },
+            "eventData": {
+                "name": "Tết Âm lịch",
+                "startDate": "2026-02-16T00:00:00Z",
+                "endDate": "2026-02-21T23:59:59Z",
+                "description": "Phụ thu 100000"
+            },
+            "periods": [
+                {
+                    "startDate": "2026-02-16T00:00:00Z",
+                    "endDate": "2026-02-21T23:59:59Z"
+                }
+            ],
+            "description": "Tết Âm lịch - Phụ thu 100000",
+            "createdBy": "system"
+        },
+        {
+            "name": "Tết Âm lịch",
+            "type": "EVENT",
+            "season": "PEAK",
+            "day": {
+                "name": "WEEKEND",
+                "dayOfWeek": [
+                    6
+                ]
+            },
+            "eventData": {
+                "name": "Tết Âm lịch",
+                "startDate": "2026-02-16T00:00:00Z",
+                "endDate": "2026-02-21T23:59:59Z",
+                "description": "Phụ thu 100000"
+            },
+            "periods": [
+                {
+                    "startDate": "2026-02-16T00:00:00Z",
+                    "endDate": "2026-02-21T23:59:59Z"
+                }
+            ],
+            "description": "Tết Âm lịch - Phụ thu 100000",
+            "createdBy": "system"
+        }
+    ],
+    "rooms": [
+        {
+            "code": "DOUBLE_WITH_BALCONY_1",
+            "globalName": "Double with balcony",
+            "localName": "Double with balcony",
+            "bedTypes": [
+                "DOUBLE_BED"
+            ],
+            "bedSize": "2m x 2.2m",
+            "area": 38,
+            "view": [
+                "null"
+            ],
+            "isSmokingAllowed": false,
+            "isBreakfastIncluded": true,
+            "maxExtraBeds": 1,
+            "maxCapacity": 3,
+            "maxAdultCapacity": 3,
+            "maxChildrenCapacity": 0,
+            "maxAdults": 2,
+            "maxChildren": 0,
+            "description": "",
+            "keyFeatures": [],
+            "prices": [
+                {
+                    "mealPlan": "RO",
+                    "countries": [],
+                    "price": 650000,
+                    "seasonName": "Mùa thấp điểm - Ngày thường",
+                    "periods": [
+                        {
+                            "startDate": "2025-03-01T00:00:00Z",
+                            "endDate": "2026-01-01T23:59:59Z"
+                        }
+                    ],
+                    "condition": "FREE_CANCELLATION",
+                    "cancellationPeriod": 0,
+                    "cancellationPeriodUnitTime": "DAY",
+                    "unitType": "FIXED_AMOUNT",
+                    "amount": 0,
+                    "dayType": "WEEKDAY"
+                },
+                {
+                    "mealPlan": "RO",
+                    "countries": [],
+                    "price": 650000,
+                    "seasonName": "Mùa thấp điểm - Cuối tuần",
+                    "periods": [
+                        {
+                            "startDate": "2025-03-01T00:00:00Z",
+                            "endDate": "2026-01-01T23:59:59Z"
+                        }
+                    ],
+                    "condition": "FREE_CANCELLATION",
+                    "cancellationPeriod": 0,
+                    "cancellationPeriodUnitTime": "DAY",
+                    "unitType": "FIXED_AMOUNT",
+                    "amount": 0,
+                    "dayType": "WEEKEND"
+                },
+                {
+                    "mealPlan": "RO",
+                    "countries": [],
+                    "price": 700000,
+                    "seasonName": "Mùa cao điểm - Ngày thường",
+                    "periods": [
+                        {
+                            "startDate": "2025-01-01T00:00:00Z",
+                            "endDate": "2026-01-01T23:59:59Z"
+                        }
+                    ],
+                    "condition": "FREE_CANCELLATION",
+                    "cancellationPeriod": 0,
+                    "cancellationPeriodUnitTime": "DAY",
+                    "unitType": "FIXED_AMOUNT",
+                    "amount": 0,
+                    "dayType": "WEEKDAY"
+                },
+                {
+                    "mealPlan": "RO",
+                    "countries": [],
+                    "price": 700000,
+                    "seasonName": "Mùa cao điểm - Cuối tuần",
+                    "periods": [
+                        {
+                            "startDate": "2025-01-01T00:00:00Z",
+                            "endDate": "2026-01-01T23:59:59Z"
+                        }
+                    ],
+                    "condition": "FREE_CANCELLATION",
+                    "cancellationPeriod": 0,
+                    "cancellationPeriodUnitTime": "DAY",
+                    "unitType": "FIXED_AMOUNT",
+                    "amount": 0,
+                    "dayType": "WEEKEND"
+                }
+            ],
+            "extraBedType": "EXTRA_BED"
+        },
+        {
+            "code": "DOUBLE_WITH_SEAVIEW_2",
+            "globalName": "Double with seaview",
+            "localName": "Double with seaview",
+            "bedTypes": [
+                "DOUBLE_BED"
+            ],
+            "bedSize": "2m x 2.2m",
+            "area": 38,
+            "view": [
+                "Sea view"
+            ],
+            "isSmokingAllowed": false,
+            "isBreakfastIncluded": true,
+            "maxExtraBeds": 1,
+            "maxCapacity": 3,
+            "maxAdultCapacity": 3,
+            "maxChildrenCapacity": 0,
+            "maxAdults": 2,
+            "maxChildren": 0,
+            "description": "",
+            "keyFeatures": [],
+            "prices": [
+                {
+                    "mealPlan": "RO",
+                    "countries": [],
+                    "price": 750000,
+                    "seasonName": "Mùa thấp điểm - Ngày thường",
+                    "periods": [
+                        {
+                            "startDate": "2025-03-01T00:00:00Z",
+                            "endDate": "2026-01-01T23:59:59Z"
+                        }
+                    ],
+                    "condition": "FREE_CANCELLATION",
+                    "cancellationPeriod": 0,
+                    "cancellationPeriodUnitTime": "DAY",
+                    "unitType": "FIXED_AMOUNT",
+                    "amount": 0,
+                    "dayType": "WEEKDAY"
+                },
+                {
+                    "mealPlan": "RO",
+                    "countries": [],
+                    "price": 750000,
+                    "seasonName": "Mùa thấp điểm - Cuối tuần",
+                    "periods": [
+                        {
+                            "startDate": "2025-03-01T00:00:00Z",
+                            "endDate": "2026-01-01T23:59:59Z"
+                        }
+                    ],
+                    "condition": "FREE_CANCELLATION",
+                    "cancellationPeriod": 0,
+                    "cancellationPeriodUnitTime": "DAY",
+                    "unitType": "FIXED_AMOUNT",
+                    "amount": 0,
+                    "dayType": "WEEKEND"
+                },
+                {
+                    "mealPlan": "RO",
+                    "countries": [],
+                    "price": 800000,
+                    "seasonName": "Mùa cao điểm - Ngày thường",
+                    "periods": [
+                        {
+                            "startDate": "2025-01-01T00:00:00Z",
+                            "endDate": "2026-01-01T23:59:59Z"
+                        }
+                    ],
+                    "condition": "FREE_CANCELLATION",
+                    "cancellationPeriod": 0,
+                    "cancellationPeriodUnitTime": "DAY",
+                    "unitType": "FIXED_AMOUNT",
+                    "amount": 0,
+                    "dayType": "WEEKDAY"
+                },
+                {
+                    "mealPlan": "RO",
+                    "countries": [],
+                    "price": 800000,
+                    "seasonName": "Mùa cao điểm - Cuối tuần",
+                    "periods": [
+                        {
+                            "startDate": "2025-01-01T00:00:00Z",
+                            "endDate": "2026-01-01T23:59:59Z"
+                        }
+                    ],
+                    "condition": "FREE_CANCELLATION",
+                    "cancellationPeriod": 0,
+                    "cancellationPeriodUnitTime": "DAY",
+                    "unitType": "FIXED_AMOUNT",
+                    "amount": 0,
+                    "dayType": "WEEKEND"
+                }
+            ],
+            "extraBedType": "EXTRA_BED"
+        },
+        {
+            "code": "TWIN_WITH_BALCONY_3",
+            "globalName": "Twin with balcony",
+            "localName": "Twin with balcony",
+            "bedTypes": [
+                "TWIN_BED"
+            ],
+            "bedSize": "1.4m x 2.2m",
+            "area": 38,
+            "view": [],
+            "isSmokingAllowed": false,
+            "isBreakfastIncluded": true,
+            "maxExtraBeds": 1,
+            "maxCapacity": 3,
+            "maxAdultCapacity": 3,
+            "maxChildrenCapacity": 0,
+            "maxAdults": 2,
+            "maxChildren": 0,
+            "description": "",
+            "keyFeatures": [],
+            "prices": [
+                {
+                    "mealPlan": "RO",
+                    "countries": [],
+                    "price": 650000,
+                    "seasonName": "Mùa thấp điểm - Ngày thường",
+                    "periods": [
+                        {
+                            "startDate": "2025-03-01T00:00:00Z",
+                            "endDate": "2026-01-01T23:59:59Z"
+                        }
+                    ],
+                    "condition": "FREE_CANCELLATION",
+                    "cancellationPeriod": 0,
+                    "cancellationPeriodUnitTime": "DAY",
+                    "unitType": "FIXED_AMOUNT",
+                    "amount": 0,
+                    "dayType": "WEEKDAY"
+                },
+                {
+                    "mealPlan": "RO",
+                    "countries": [],
+                    "price": 650000,
+                    "seasonName": "Mùa thấp điểm - Cuối tuần",
+                    "periods": [
+                        {
+                            "startDate": "2025-03-01T00:00:00Z",
+                            "endDate": "2026-01-01T23:59:59Z"
+                        }
+                    ],
+                    "condition": "FREE_CANCELLATION",
+                    "cancellationPeriod": 0,
+                    "cancellationPeriodUnitTime": "DAY",
+                    "unitType": "FIXED_AMOUNT",
+                    "amount": 0,
+                    "dayType": "WEEKEND"
+                },
+                {
+                    "mealPlan": "RO",
+                    "countries": [],
+                    "price": 700000,
+                    "seasonName": "Mùa cao điểm - Ngày thường",
+                    "periods": [
+                        {
+                            "startDate": "2025-01-01T00:00:00Z",
+                            "endDate": "2026-01-01T23:59:59Z"
+                        }
+                    ],
+                    "condition": "FREE_CANCELLATION",
+                    "cancellationPeriod": 0,
+                    "cancellationPeriodUnitTime": "DAY",
+                    "unitType": "FIXED_AMOUNT",
+                    "amount": 0,
+                    "dayType": "WEEKDAY"
+                },
+                {
+                    "mealPlan": "RO",
+                    "countries": [],
+                    "price": 700000,
+                    "seasonName": "Mùa cao điểm - Cuối tuần",
+                    "periods": [
+                        {
+                            "startDate": "2025-01-01T00:00:00Z",
+                            "endDate": "2026-01-01T23:59:59Z"
+                        }
+                    ],
+                    "condition": "FREE_CANCELLATION",
+                    "cancellationPeriod": 0,
+                    "cancellationPeriodUnitTime": "DAY",
+                    "unitType": "FIXED_AMOUNT",
+                    "amount": 0,
+                    "dayType": "WEEKEND"
+                }
+            ],
+            "extraBedType": "EXTRA_BED"
+        },
+        {
+            "code": "TWIN_WITH_SEAVIEW_4",
+            "globalName": "Twin with seaview",
+            "localName": "Twin with seaview",
+            "bedTypes": [
+                "TWIN_BED"
+            ],
+            "bedSize": "1.4m x 2.2m",
+            "area": 38,
+            "view": [
+                "Sea view"
+            ],
+            "isSmokingAllowed": false,
+            "isBreakfastIncluded": true,
+            "maxExtraBeds": 1,
+            "maxCapacity": 3,
+            "maxAdultCapacity": 3,
+            "maxChildrenCapacity": 0,
+            "maxAdults": 2,
+            "maxChildren": 0,
+            "description": "",
+            "keyFeatures": [],
+            "prices": [
+                {
+                    "mealPlan": "RO",
+                    "countries": [],
+                    "price": 750000,
+                    "seasonName": "Mùa thấp điểm - Ngày thường",
+                    "periods": [
+                        {
+                            "startDate": "2025-03-01T00:00:00Z",
+                            "endDate": "2026-01-01T23:59:59Z"
+                        }
+                    ],
+                    "condition": "FREE_CANCELLATION",
+                    "cancellationPeriod": 0,
+                    "cancellationPeriodUnitTime": "DAY",
+                    "unitType": "FIXED_AMOUNT",
+                    "amount": 0,
+                    "dayType": "WEEKDAY"
+                },
+                {
+                    "mealPlan": "RO",
+                    "countries": [],
+                    "price": 750000,
+                    "seasonName": "Mùa thấp điểm - Cuối tuần",
+                    "periods": [
+                        {
+                            "startDate": "2025-03-01T00:00:00Z",
+                            "endDate": "2026-01-01T23:59:59Z"
+                        }
+                    ],
+                    "condition": "FREE_CANCELLATION",
+                    "cancellationPeriod": 0,
+                    "cancellationPeriodUnitTime": "DAY",
+                    "unitType": "FIXED_AMOUNT",
+                    "amount": 0,
+                    "dayType": "WEEKEND"
+                },
+                {
+                    "mealPlan": "RO",
+                    "countries": [],
+                    "price": 800000,
+                    "seasonName": "Mùa cao điểm - Ngày thường",
+                    "periods": [
+                        {
+                            "startDate": "2025-01-01T00:00:00Z",
+                            "endDate": "2026-01-01T23:59:59Z"
+                        }
+                    ],
+                    "condition": "FREE_CANCELLATION",
+                    "cancellationPeriod": 0,
+                    "cancellationPeriodUnitTime": "DAY",
+                    "unitType": "FIXED_AMOUNT",
+                    "amount": 0,
+                    "dayType": "WEEKDAY"
+                },
+                {
+                    "mealPlan": "RO",
+                    "countries": [],
+                    "price": 800000,
+                    "seasonName": "Mùa cao điểm - Cuối tuần",
+                    "periods": [
+                        {
+                            "startDate": "2025-01-01T00:00:00Z",
+                            "endDate": "2026-01-01T23:59:59Z"
+                        }
+                    ],
+                    "condition": "FREE_CANCELLATION",
+                    "cancellationPeriod": 0,
+                    "cancellationPeriodUnitTime": "DAY",
+                    "unitType": "FIXED_AMOUNT",
+                    "amount": 0,
+                    "dayType": "WEEKEND"
+                }
+            ],
+            "extraBedType": "EXTRA_BED"
+        },
+        {
+            "code": "FAMILY_WITH_BALCONY_5",
+            "globalName": "Family with balcony",
+            "localName": "Family with balcony",
+            "bedTypes": [
+                "DOUBLE_BED",
+                "TWIN_BED"
+            ],
+            "bedSize": "1.8m x 2.2m",
+            "area": 48,
+            "view": [],
+            "isSmokingAllowed": false,
+            "isBreakfastIncluded": true,
+            "maxExtraBeds": 1,
+            "maxCapacity": 7,
+            "maxAdultCapacity": 5,
+            "maxChildrenCapacity": 2,
+            "maxAdults": 4,
+            "maxChildren": 2,
+            "description": "",
+            "keyFeatures": [],
+            "prices": [
+                {
+                    "mealPlan": "RO",
+                    "countries": [],
+                    "price": 850000,
+                    "seasonName": "Mùa thấp điểm - Ngày thường",
+                    "periods": [
+                        {
+                            "startDate": "2025-03-01T00:00:00Z",
+                            "endDate": "2026-01-01T23:59:59Z"
+                        }
+                    ],
+                    "condition": "FREE_CANCELLATION",
+                    "cancellationPeriod": 0,
+                    "cancellationPeriodUnitTime": "DAY",
+                    "unitType": "FIXED_AMOUNT",
+                    "amount": 0,
+                    "dayType": "WEEKDAY"
+                },
+                {
+                    "mealPlan": "RO",
+                    "countries": [],
+                    "price": 850000,
+                    "seasonName": "Mùa thấp điểm - Cuối tuần",
+                    "periods": [
+                        {
+                            "startDate": "2025-03-01T00:00:00Z",
+                            "endDate": "2026-01-01T23:59:59Z"
+                        }
+                    ],
+                    "condition": "FREE_CANCELLATION",
+                    "cancellationPeriod": 0,
+                    "cancellationPeriodUnitTime": "DAY",
+                    "unitType": "FIXED_AMOUNT",
+                    "amount": 0,
+                    "dayType": "WEEKEND"
+                },
+                {
+                    "mealPlan": "RO",
+                    "countries": [],
+                    "price": 900000,
+                    "seasonName": "Mùa cao điểm - Ngày thường",
+                    "periods": [
+                        {
+                            "startDate": "2025-01-01T00:00:00Z",
+                            "endDate": "2026-01-01T23:59:59Z"
+                        }
+                    ],
+                    "condition": "FREE_CANCELLATION",
+                    "cancellationPeriod": 0,
+                    "cancellationPeriodUnitTime": "DAY",
+                    "unitType": "FIXED_AMOUNT",
+                    "amount": 0,
+                    "dayType": "WEEKDAY"
+                },
+                {
+                    "mealPlan": "RO",
+                    "countries": [],
+                    "price": 900000,
+                    "seasonName": "Mùa cao điểm - Cuối tuần",
+                    "periods": [
+                        {
+                            "startDate": "2025-01-01T00:00:00Z",
+                            "endDate": "2026-01-01T23:59:59Z"
+                        }
+                    ],
+                    "condition": "FREE_CANCELLATION",
+                    "cancellationPeriod": 0,
+                    "cancellationPeriodUnitTime": "DAY",
+                    "unitType": "FIXED_AMOUNT",
+                    "amount": 0,
+                    "dayType": "WEEKEND"
+                }
+            ],
+            "extraBedType": "EXTRA_BED"
+        },
+        {
+            "code": "FAMILY_WITH_SEAVIEW_6",
+            "globalName": "Family with seaview",
+            "localName": "Family with seaview",
+            "bedTypes": [
+                "DOUBLE_BED",
+                "TWIN_BED"
+            ],
+            "bedSize": "1.8m x 2.2m",
+            "area": 48,
+            "view": [
+                "Sea view"
+            ],
+            "isSmokingAllowed": false,
+            "isBreakfastIncluded": true,
+            "maxExtraBeds": 1,
+            "maxCapacity": 7,
+            "maxAdultCapacity": 5,
+            "maxChildrenCapacity": 2,
+            "maxAdults": 4,
+            "maxChildren": 2,
+            "description": "",
+            "keyFeatures": [],
+            "prices": [
+                {
+                    "mealPlan": "RO",
+                    "countries": [],
+                    "price": 850000,
+                    "seasonName": "Mùa thấp điểm - Ngày thường",
+                    "periods": [
+                        {
+                            "startDate": "2025-03-01T00:00:00Z",
+                            "endDate": "2026-01-01T23:59:59Z"
+                        }
+                    ],
+                    "condition": "FREE_CANCELLATION",
+                    "cancellationPeriod": 0,
+                    "cancellationPeriodUnitTime": "DAY",
+                    "unitType": "FIXED_AMOUNT",
+                    "amount": 0,
+                    "dayType": "WEEKDAY"
+                },
+                {
+                    "mealPlan": "RO",
+                    "countries": [],
+                    "price": 850000,
+                    "seasonName": "Mùa thấp điểm - Cuối tuần",
+                    "periods": [
+                        {
+                            "startDate": "2025-03-01T00:00:00Z",
+                            "endDate": "2026-01-01T23:59:59Z"
+                        }
+                    ],
+                    "condition": "FREE_CANCELLATION",
+                    "cancellationPeriod": 0,
+                    "cancellationPeriodUnitTime": "DAY",
+                    "unitType": "FIXED_AMOUNT",
+                    "amount": 0,
+                    "dayType": "WEEKEND"
+                },
+                {
+                    "mealPlan": "RO",
+                    "countries": [],
+                    "price": 900000,
+                    "seasonName": "Mùa cao điểm - Ngày thường",
+                    "periods": [
+                        {
+                            "startDate": "2025-01-01T00:00:00Z",
+                            "endDate": "2026-01-01T23:59:59Z"
+                        }
+                    ],
+                    "condition": "FREE_CANCELLATION",
+                    "cancellationPeriod": 0,
+                    "cancellationPeriodUnitTime": "DAY",
+                    "unitType": "FIXED_AMOUNT",
+                    "amount": 0,
+                    "dayType": "WEEKDAY"
+                },
+                {
+                    "mealPlan": "RO",
+                    "countries": [],
+                    "price": 900000,
+                    "seasonName": "Mùa cao điểm - Cuối tuần",
+                    "periods": [
+                        {
+                            "startDate": "2025-01-01T00:00:00Z",
+                            "endDate": "2026-01-01T23:59:59Z"
+                        }
+                    ],
+                    "condition": "FREE_CANCELLATION",
+                    "cancellationPeriod": 0,
+                    "cancellationPeriodUnitTime": "DAY",
+                    "unitType": "FIXED_AMOUNT",
+                    "amount": 0,
+                    "dayType": "WEEKEND"
+                }
+            ],
+            "extraBedType": "EXTRA_BED"
+        },
+        {
+            "code": "TRIPLE_WITH_BALCONY_7",
+            "globalName": "Triple with balcony",
+            "localName": "Triple with balcony",
+            "bedTypes": [
+                "TRIPLE_BED"
+            ],
+            "bedSize": "2m x 2.2m",
+            "area": 42,
+            "view": [],
+            "isSmokingAllowed": false,
+            "isBreakfastIncluded": true,
+            "maxExtraBeds": 1,
+            "maxCapacity": 5,
+            "maxAdultCapacity": 4,
+            "maxChildrenCapacity": 1,
+            "maxAdults": 3,
+            "maxChildren": 1,
+            "description": "",
+            "keyFeatures": [],
+            "prices": [
+                {
+                    "mealPlan": "RO",
+                    "countries": [],
+                    "price": 850000,
+                    "seasonName": "Mùa thấp điểm - Ngày thường",
+                    "periods": [
+                        {
+                            "startDate": "2025-03-01T00:00:00Z",
+                            "endDate": "2026-01-01T23:59:59Z"
+                        }
+                    ],
+                    "condition": "FREE_CANCELLATION",
+                    "cancellationPeriod": 0,
+                    "cancellationPeriodUnitTime": "DAY",
+                    "unitType": "FIXED_AMOUNT",
+                    "amount": 0,
+                    "dayType": "WEEKDAY"
+                },
+                {
+                    "mealPlan": "RO",
+                    "countries": [],
+                    "price": 850000,
+                    "seasonName": "Mùa thấp điểm - Cuối tuần",
+                    "periods": [
+                        {
+                            "startDate": "2025-03-01T00:00:00Z",
+                            "endDate": "2026-01-01T23:59:59Z"
+                        }
+                    ],
+                    "condition": "FREE_CANCELLATION",
+                    "cancellationPeriod": 0,
+                    "cancellationPeriodUnitTime": "DAY",
+                    "unitType": "FIXED_AMOUNT",
+                    "amount": 0,
+                    "dayType": "WEEKEND"
+                },
+                {
+                    "mealPlan": "RO",
+                    "countries": [],
+                    "price": 900000,
+                    "seasonName": "Mùa cao điểm - Ngày thường",
+                    "periods": [
+                        {
+                            "startDate": "2025-01-01T00:00:00Z",
+                            "endDate": "2026-01-01T23:59:59Z"
+                        }
+                    ],
+                    "condition": "FREE_CANCELLATION",
+                    "cancellationPeriod": 0,
+                    "cancellationPeriodUnitTime": "DAY",
+                    "unitType": "FIXED_AMOUNT",
+                    "amount": 0,
+                    "dayType": "WEEKDAY"
+                },
+                {
+                    "mealPlan": "RO",
+                    "countries": [],
+                    "price": 900000,
+                    "seasonName": "Mùa cao điểm - Cuối tuần",
+                    "periods": [
+                        {
+                            "startDate": "2025-01-01T00:00:00Z",
+                            "endDate": "2026-01-01T23:59:59Z"
+                        }
+                    ],
+                    "condition": "FREE_CANCELLATION",
+                    "cancellationPeriod": 0,
+                    "cancellationPeriodUnitTime": "DAY",
+                    "unitType": "FIXED_AMOUNT",
+                    "amount": 0,
+                    "dayType": "WEEKEND"
+                }
+            ],
+            "extraBedType": "EXTRA_BED"
+        }
+    ]
+}

@@ -1,0 +1,569 @@
+[
+  {
+    "hotel_info": {
+      "name": "HOME PARK HOTEL",
+      "rating": null,
+      "type": "HOTEL",
+      "address": "Hẻm 124 Trần Hưng Đạo Street, Dương Đông Ward, Phú Quốc City, Kiên Giang Province",
+      "phone": "+84 945676776",
+      "email": "info@homeparkhotel.com",
+      "website": "https://homeparkhotel.com",
+      "location": "Phú Quốc"
+    },
+    "validity_period": {
+      "start_date": "2025-01-01",
+      "end_date": "2026-01-01",
+      "note": "Chính sách giá áp dụng từ năm 2025 đến 2026"
+    },
+    "room_types": [
+      {
+        "room_type": "Double with balcony",
+        "room_size": "38",
+        "bed_type": [
+          "DOUBLE_BED"
+        ],
+        "bed_type_description": "2m x 2.2m",
+        "capacity": {
+          "adults": 2,
+          "children": 0,
+          "total": 2
+        },
+        "view": "null",
+        "features": [],
+        "quantity": 7,
+        "pricing": {
+          "low_season": {
+            "price": 650000,
+            "period": "Tháng 3, 4, 5, 9, 10",
+            "months": [
+              3,
+              4,
+              5,
+              9,
+              10
+            ],
+            "dayOfWeek": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ]
+          },
+          "high_season": {
+            "price": 700000,
+            "period": "Tháng 1, 2, 6, 7, 8, 11, 12",
+            "months": [
+              1,
+              2,
+              6,
+              7,
+              8,
+              11,
+              12
+            ],
+            "dayOfWeek": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6
+            ]
+          },
+          "peak_season": {
+            "price": null,
+            "period": null,
+            "months": [],
+            "dayOfWeek": []
+          }
+        },
+        "extra_bed": {
+          "type": "EXTRA_BED",
+          "price": 200000,
+          "note": "Cho người từ 12 tuổi trở lên"
+        }
+      },
+      {
+        "room_type": "Double with seaview",
+        "room_size": "38",
+        "bed_type": [
+          "DOUBLE_BED"
+        ],
+        "bed_type_description": "2m x 2.2m",
+        "capacity": {
+          "adults": 2,
+          "children": 0,
+          "total": 2
+        },
+        "view": "Sea view",
+        "features": [],
+        "quantity": 5,
+        "pricing": {
+          "low_season": {
+            "price": 750000,
+            "period": "Tháng 3, 4, 5, 9, 10",
+            "months": [
+              3,
+              4,
+              5,
+              9,
+              10
+            ],
+            "dayOfWeek": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ]
+          },
+          "high_season": {
+            "price": 800000,
+            "period": "Tháng 1, 2, 6, 7, 8, 11, 12",
+            "months": [
+              1,
+              2,
+              6,
+              7,
+              8,
+              11,
+              12
+            ],
+            "dayOfWeek": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6
+            ]
+          },
+          "peak_season": {
+            "price": null,
+            "period": null,
+            "months": [],
+            "dayOfWeek": []
+          }
+        },
+        "extra_bed": {
+          "type": "EXTRA_BED",
+          "price": 200000,
+          "note": "Cho người từ 12 tuổi trở lên"
+        }
+      },
+      {
+        "room_type": "Twin with balcony",
+        "room_size": "38",
+        "bed_type": [
+          "TWIN_BED"
+        ],
+        "bed_type_description": "1.4m x 2.2m",
+        "capacity": {
+          "adults": 2,
+          "children": 0,
+          "total": 2
+        },
+        "view": null,
+        "features": [],
+        "quantity": 10,
+        "pricing": {
+          "low_season": {
+            "price": 650000,
+            "period": "Tháng 3, 4, 5, 9, 10",
+            "months": [
+              3,
+              4,
+              5,
+              9,
+              10
+            ],
+            "dayOfWeek": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ]
+          },
+          "high_season": {
+            "price": 700000,
+            "period": "Tháng 1, 2, 6, 7, 8, 11, 12",
+            "months": [
+              1,
+              2,
+              6,
+              7,
+              8,
+              11,
+              12
+            ],
+            "dayOfWeek": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6
+            ]
+          },
+          "peak_season": {
+            "price": null,
+            "period": null,
+            "months": [],
+            "dayOfWeek": []
+          }
+        },
+        "extra_bed": {
+          "type": "EXTRA_BED",
+          "price": 200000,
+          "note": "Cho người từ 12 tuổi trở lên"
+        }
+      },
+      {
+        "room_type": "Twin with seaview",
+        "room_size": "38",
+        "bed_type": [
+          "TWIN_BED"
+        ],
+        "bed_type_description": "1.4m x 2.2m",
+        "capacity": {
+          "adults": 2,
+          "children": 0,
+          "total": 2
+        },
+        "view": "Sea view",
+        "features": [],
+        "quantity": null,
+        "pricing": {
+          "low_season": {
+            "price": 750000,
+            "period": "Tháng 3, 4, 5, 9, 10",
+            "months": [
+              3,
+              4,
+              5,
+              9,
+              10
+            ],
+            "dayOfWeek": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ]
+          },
+          "high_season": {
+            "price": 800000,
+            "period": "Tháng 1, 2, 6, 7, 8, 11, 12",
+            "months": [
+              1,
+              2,
+              6,
+              7,
+              8,
+              11,
+              12
+            ],
+            "dayOfWeek": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6
+            ]
+          },
+          "peak_season": {
+            "price": null,
+            "period": null,
+            "months": [],
+            "dayOfWeek": []
+          }
+        },
+        "extra_bed": {
+          "type": "EXTRA_BED",
+          "price": 200000,
+          "note": "Cho người từ 12 tuổi trở lên"
+        }
+      },
+      {
+        "room_type": "Family with balcony",
+        "room_size": "48",
+        "bed_type": [
+          "DOUBLE_BED",
+          "TWIN_BED"
+        ],
+        "bed_type_description": "1.8m x 2.2m",
+        "capacity": {
+          "adults": 4,
+          "children": 2,
+          "total": 6
+        },
+        "view": null,
+        "features": [],
+        "quantity": 10,
+        "pricing": {
+          "low_season": {
+            "price": 850000,
+            "period": "Tháng 3, 4, 5, 9, 10",
+            "months": [
+              3,
+              4,
+              5,
+              9,
+              10
+            ],
+            "dayOfWeek": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ]
+          },
+          "high_season": {
+            "price": 900000,
+            "period": "Tháng 1, 2, 6, 7, 8, 11, 12",
+            "months": [
+              1,
+              2,
+              6,
+              7,
+              8,
+              11,
+              12
+            ],
+            "dayOfWeek": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6
+            ]
+          },
+          "peak_season": {
+            "price": null,
+            "period": null,
+            "months": [],
+            "dayOfWeek": []
+          }
+        },
+        "extra_bed": {
+          "type": "EXTRA_BED",
+          "price": 200000,
+          "note": "Cho người từ 12 tuổi trở lên"
+        }
+      },
+      {
+        "room_type": "Family with seaview",
+        "room_size": "48",
+        "bed_type": [
+          "DOUBLE_BED",
+          "TWIN_BED"
+        ],
+        "bed_type_description": "1.8m x 2.2m",
+        "capacity": {
+          "adults": 4,
+          "children": 2,
+          "total": 6
+        },
+        "view": "Sea view",
+        "features": [],
+        "quantity": null,
+        "pricing": {
+          "low_season": {
+            "price": 850000,
+            "period": "Tháng 3, 4, 5, 9, 10",
+            "months": [
+              3,
+              4,
+              5,
+              9,
+              10
+            ],
+            "dayOfWeek": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ]
+          },
+          "high_season": {
+            "price": 900000,
+            "period": "Tháng 1, 2, 6, 7, 8, 11, 12",
+            "months": [
+              1,
+              2,
+              6,
+              7,
+              8,
+              11,
+              12
+            ],
+            "dayOfWeek": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6
+            ]
+          },
+          "peak_season": {
+            "price": null,
+            "period": null,
+            "months": [],
+            "dayOfWeek": []
+          }
+        },
+        "extra_bed": {
+          "type": "EXTRA_BED",
+          "price": 200000,
+          "note": "Cho người từ 12 tuổi trở lên"
+        }
+      },
+      {
+        "room_type": "Triple with balcony",
+        "room_size": "42",
+        "bed_type": [
+          "TRIPLE_BED"
+        ],
+        "bed_type_description": "2m x 2.2m",
+        "capacity": {
+          "adults": 3,
+          "children": 1,
+          "total": 4
+        },
+        "view": null,
+        "features": [],
+        "quantity": null,
+        "pricing": {
+          "low_season": {
+            "price": 850000,
+            "period": "Tháng 3, 4, 5, 9, 10",
+            "months": [
+              3,
+              4,
+              5,
+              9,
+              10
+            ],
+            "dayOfWeek": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ]
+          },
+          "high_season": {
+            "price": 900000,
+            "period": "Tháng 1, 2, 6, 7, 8, 11, 12",
+            "months": [
+              1,
+              2,
+              6,
+              7,
+              8,
+              11,
+              12
+            ],
+            "dayOfWeek": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6
+            ]
+          },
+          "peak_season": {
+            "price": null,
+            "period": null,
+            "months": [],
+            "dayOfWeek": []
+          }
+        },
+        "extra_bed": {
+          "type": "EXTRA_BED",
+          "price": 200000,
+          "note": "Cho người từ 12 tuổi trở lên"
+        }
+      }
+    ],
+    "surcharges": {
+      "holiday_surcharge": {
+        "rate": "100000",
+        "type": "fixed",
+        "applicable_dates": [
+          {
+            "name": "Tết Dương lịch",
+            "dates": [
+              "2026-01-01",
+              "2025-12-31"
+            ]
+          },
+          {
+            "name": "Tết Âm lịch",
+            "start_date": "2026-02-16",
+            "end_date": "2026-02-21"
+          }
+        ]
+      },
+      "child_policy": [
+        {
+          "age_range": "0-5 tuổi",
+          "min_age": 0,
+          "max_age": 5,
+          "charge": 0,
+          "note": "Miễn phí"
+        },
+        {
+          "age_range": "6-11 tuổi",
+          "min_age": 6,
+          "max_age": 11,
+          "charge": 100000,
+          "note": "Phụ thu/trẻ/đêm"
+        },
+        {
+          "age_range": "≥12 tuổi",
+          "min_age": 12,
+          "max_age": null,
+          "charge": 200000,
+          "note": "Tính như người lớn"
+        }
+      ],
+      "late_checkout": {
+        "hourly_rate": 50000,
+        "half_day": "50% giá phòng (sau 4h)",
+        "full_day": "100% giá phòng (sau 8h)"
+      },
+      "extra_person": {
+        "adult": 200000,
+        "note": "Phụ thu thêm người lớn/đêm"
+      }
+    },
+    "inclusions": [
+      "Bữa sáng hàng ngày",
+      "Wifi miễn phí",
+      "2 chai nước lọc/ngày",
+      "Cà phê & trà",
+      "Đón tiễn sân bay (có điều kiện)",
+      "Sử dụng hồ bơi, gym, sauna"
+    ],
+    "additional_notes": [
+      "Khách sạn không cho phép thay đổi thông tin sau khi booking được xác nhận. / The hotel does not allow changes to information after bookings are confirmed."
+    ]
+  }
+]
