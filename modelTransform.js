@@ -676,7 +676,7 @@ function convertHotelData(sourceData) {
     globalName: prefix + hotel_info.name,
     type: hotelType,
     address: hotel_info.address,
-    star: hotel_info.rating?.toString() || '2',
+    star: hotel_info.rating?.toString() || '1',
     serviceScope: "LOCAL",
     //   checkInHouse: "14:00",
     //   checkOutHouse: "12:00",
