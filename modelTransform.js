@@ -1,3 +1,7 @@
+// DEV flow onlu
+const prefix = Date.now() + '-';
+// PROD
+// const prefix = '';
 // Hàm parse bed types - fallback nếu prompt chưa chuẩn hóa
 function parseBedTypes(bedTypeInput) {
   // Nếu đã là array enum (từ prompt mới), trả về trực tiếp
@@ -668,11 +672,11 @@ function convertHotelData(sourceData) {
 
   // Tạo object kết quả
   const result = {
-    localName: hotel_info.name,
-    globalName: hotel_info.name,
+    localName: prefix + hotel_info.name,
+    globalName: prefix + hotel_info.name,
     type: hotelType,
     address: hotel_info.address,
-    star: hotel_info.rating?.toString() || '2',
+    star: hotel_info.rating?.toString() || '1',
     serviceScope: "LOCAL",
     //   checkInHouse: "14:00",
     //   checkOutHouse: "12:00",
@@ -682,7 +686,7 @@ function convertHotelData(sourceData) {
     //   image: 0,
     //   nearbyAttractions: [],
     keyFeatures: inclusions || [],
-    code: hotel_info.name.replace(/\s+/g, "_").toUpperCase(),
+    code: prefix + hotel_info.name.replace(/\s+/g, "_").toUpperCase(),
     // bank_details: removed per prompt
     // contact_person: removed per prompt
     //   source: "ACP",

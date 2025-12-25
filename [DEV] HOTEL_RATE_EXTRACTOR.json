@@ -1,0 +1,769 @@
+{
+  "name": "[DEV] HOTEL_RATE_EXTRACTOR",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        48,
+        0
+      ],
+      "id": "38ebcbcc-3e89-4d04-ac5e-e0a8ac8a864e",
+      "name": "Loop Over Items",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        400,
+        16
+      ],
+      "id": "bd5ba4bc-ac76-44b2-8154-b7b15813de6a",
+      "name": "Download file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "9yLxmdBnWOTxZU3z",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "operation": "analyze",
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "text": "Bạn là một data specialist chuyên trích xuất thông tin từ bảng báo giá khách sạn. Hãy phân tích hình ảnh dưới đây và trả về thông tin dưới dạng JSON chuẩn hóa. Tập trung phần báo giá phòng ở dạng bảng.\n\n## Yêu cầu đầu ra\n\n**QUAN TRỌNG**: Mỗi file báo giá luôn chỉ chứa:\n- **1 khách sạn duy nhất**, HOẶC\n- **1 chuỗi khách sạn** (nhiều cơ sở cùng tên, khác địa chỉ/báo giá). Nếu là chuỗi, PHẢI trả về **một object cho từng cơ sở** (không dừng ở cơ sở đầu tiên, không gộp).\n\n**KHÔNG BAO GIỜ** có trường hợp mix nhiều khách sạn khác nhau trong cùng 1 file.\n\nLuôn luôn trả về **một array các khách sạn**, mỗi phần tử là một object với cấu trúc sau (các trường không có thông tin để giá trị null). Với chuỗi khách sạn cùng tên, phải phân biệt rõ từng cơ sở trong tên:\n- Nếu có đánh số: thêm hậu tố \" - Cơ sở X\" (ví dụ: \"Hotel ABC - Cơ sở 1\", \"Hotel ABC - Cơ sở 2\").\n- Nếu không đánh số nhưng có địa chỉ: thêm phần địa chỉ ngắn vào tên (ví dụ địa chỉ \"301-303 Lý Tự Trọng, Bến Thành, Quận 1, TP.HCM\" → đặt tên \"Hotel ABC - Cơ sở 301 Lý Tự Trọng\").\n- Nếu cùng một tên khách sạn xuất hiện ở nhiều địa chỉ/bảng giá trong file, phải tạo các object tách biệt, mỗi object gắn đúng địa chỉ/bảng giá tương ứng.\n```json\n[\n  {\n    \"hotel_info\": {\n      \"name\": \"Tên khách sạn\",\n      \"rating\": \"Số sao (VD: 4)\",\n      \"type\": \"HOTEL\",\n      \"address\": \"Địa chỉ đầy đủ\",\n      \"location\": \"Khu vực/Thành phố\"\n    },\n    \"validity_period\": {\n      \"start_date\": \"YYYY-MM-DD\",\n      \"end_date\": \"YYYY-MM-DD hoặc 'until_further_notice'\"\n    },\n    \"room_types\": [\n      {\n        \"room_type\": \"Tên loại phòng\",\n        \"room_size\": \"Diện tích (m2)\",\n        \"bed_type\": [\"DOUBLE_BED\", \"TWIN_BED\"],\n        \"bed_type_description\": \"Mô tả loại giường (VD: Double 1m8, Twin 1m4x2) - giữ nguyên để tham khảo\",\n        \"capacity\": {\n          \"adults\": 2,\n          \"children\": 0,\n          \"total\": 2\n        },\n        \"view\": \"View (núi/biển/thành phố) hoặc null\",\n        \"pricing\": {\n          \"low_season\": {\n            \"price\": 1000000,\n            \"period\": \"Tháng 4-10/2025\",\n            \"months\": [4, 5, 6, 7, 8, 9, 10],\n            \"dayOfWeek\": [0, 1, 2, 3, 4, 5, 6]\n          },\n          \"high_season\": {\n            \"price\": 1200000,\n            \"period\": \"Tháng 11/2025-4/2026\",\n            \"months\": [11, 12, 1, 2, 3, 4],\n            \"dayOfWeek\": [0, 1, 2, 3, 4, 5, 6]\n          },\n          \"peak_season\": {\n            \"price\": null,\n            \"period\": null,\n            \"months\": [],\n            \"dayOfWeek\": []\n          }\n        },\n        \"extra_bed\": {\n          \"type\": \"EXTRA_BED\"\n        }\n      }\n    ],\n    \"surcharges\": {\n      \"holiday_surcharge\": {\n        \"rate\": \"30% hoặc 100000\",\n        \"type\": \"percentage hoặc fixed\",\n        \"applicable_dates\": [\n          {\n            \"name\": \"Tết Dương lịch\",\n            \"dates\": [\"2025-12-31\", \"2026-01-01\"]\n          },\n          {\n            \"name\": \"Tết Âm lịch\",\n            \"start_date\": \"2026-02-16\",\n            \"end_date\": \"2026-02-21\"\n          }\n        ]\n      }\n    },\n    \"inclusions\": [\n      \"Bữa sáng hàng ngày\",\n      \"Wifi miễn phí\",\n      \"2 chai nước lọc/ngày\",\n      \"Cà phê & trà\",\n      \"Đón tiễn sân bay (có điều kiện)\",\n      \"Sử dụng hồ bơi, gym, sauna\"\n    ]\n  }\n]\n```\n\n## Hướng dẫn xử lý\n\n1. **Đọc kỹ toàn bộ tài liệu**: Quét qua tất cả trang để không bỏ sót thông tin\n\n2. **Chuẩn hóa dữ liệu & ĐẦY ĐỦ PHÒNG/CƠ SỞ**:\n   - Giá tiền: Luôn là số nguyên, bỏ dấu phẩy/chấm (VD: 1.000.000 → 1000000)\n   - Ngày tháng: Format YYYY-MM-DD (VD: 30/04/2025 → 2025-04-30)\n   - Tên phòng: Giữ nguyên tiếng Việt có dấu\n   - **BẮT BUỘC LIỆT KÊ ĐẦY ĐỦ TẤT CẢ LOẠI PHÒNG** xuất hiện trong bảng giá, không được bỏ sót hay chỉ lấy 1 phòng mẫu. Mỗi dòng room type trong bảng giá phải tạo 1 object trong `room_types`. Nếu output bị thiếu phòng so với bảng giá → coi là sai, cần trả đủ.\n   - Đọc hết các bảng/khối giá (thông tin phòng thường ở dạng bảng): nếu có nhiều bảng cho nhiều khách sạn/cơ sở hoặc nhiều trang, phải lấy đủ tất cả phòng trong từng bảng.\n   - Nếu tài liệu là chuỗi khách sạn với nhiều cơ sở: lặp qua TỪNG cơ sở, tạo object riêng và thu thập ĐỦ tất cả phòng của từng cơ sở; không dừng sau cơ sở đầu tiên.\n   - Nếu bảng giá có nhiều giai đoạn (past/current/future): chỉ lấy **giai đoạn đang áp dụng tại ngày hiện tại**. Nếu không có giai đoạn bao phủ ngày hiện tại, chọn giai đoạn sắp tới gần nhất (gần nhất tương lai), bỏ các giai đoạn đã hết hạn.\n   - Nếu cùng tên phòng nhưng khác loại giường hoặc khác giá → tách thành các entry riêng, thêm hậu tố phân biệt (ví dụ: \"Deluxe Window - Double\", \"Deluxe Window - Twin\"), mỗi entry giữ đúng giá của biến thể đó.\n   - Mỗi khách sạn có thể có nhiều hạng phòng (vd: Superior No Window, Deluxe Window, Premier/Executive/Signature Suite, Family Deluxe, Connecting Room...). **Mọi dòng trong bảng giá của từng khách sạn đều phải xuất hiện trong `room_types`.** Không được bỏ các hạng suite, connecting, corner, premium, view khác nhau, hay các biến thể có/không cửa sổ.\n   - Nếu một phòng có nhiều giai đoạn giá, **chỉ lấy giai đoạn đang hiệu lực hoặc gần nhất trong tương lai** (dựa trên ngày hiện tại). Không cần liệt kê các giai đoạn đã hết hạn xa.\n   - Nếu bảng có giá weekday/weekend khác nhau, phải lưu đúng dayOfWeek cho từng mức giá.\n   - Nếu có số lượng phòng (quantity) ghi trong bảng, phải điền; nếu không có, để null.\n   - **Loại giường (bed_type)**: PHẢI là array enum, các giá trị hợp lệ:\n     * \"DOUBLE_BED\" - cho Double, DBL, 1m8, 1.8m\n     * \"TWIN_BED\" - cho Twin, TWN, 1m2, 1.4m\n     * \"TRIPLE_BED\" - cho Triple, Trip, 3 giường\n     * \"QUEEN_BED\" - cho Queen, QN, 1m6, 1.6m\n     * \"KING_BED\" - cho King, KG, 2m\n     - Nếu có nhiều loại giường trong cùng phòng, trả về array: [\"DOUBLE_BED\", \"TWIN_BED\"]\n     - Nếu không xác định được, mặc định: [\"DOUBLE_BED\"]\n   - **Giường phụ (extra_bed.type)**: PHẢI là enum:\n     * \"EXTRA_BED\" - nếu có giường phụ\n     * null - nếu không có giường phụ (KHÔNG dùng \"NONE\")\n   - **Loại khách sạn (hotel_info.type)**: PHẢI là enum, các giá trị hợp lệ:\n     * \"HOTEL\" - Khách sạn thông thường\n     * \"MOTEL\" - Motel\n     * \"MOTEL_INN\" - Motel Inn\n     * \"RESORT\" - Resort\n     * \"BOUTIQUE\" - Boutique Hotel\n     * \"HOMESTAY\" - Homestay\n     - Nếu không đề cập rõ trong tài liệu, để null (sẽ được xử lý tự động dựa trên số sao)\n\n3. **Xử lý thông tin thiếu**:\n   - Nếu không tìm thấy thông tin → đặt giá trị `null`\n   - **TUYỆT ĐỐI KHÔNG TỰ BIA/PHỎNG ĐOÁN DỮ LIỆU**. Nếu tài liệu không nêu, để `null` hoặc bỏ trống trường đó. Không tự tạo tên, địa chỉ, giá phòng, số lượng phòng, v.v.\n\n4. **Nhận diện mùa**:\n   - Low season: Thường tháng 4-10\n   - High season: Thường tháng 11-4 năm sau\n   - Peak season: Lễ Tết (nếu có bảng giá riêng)\n   - **dayOfWeek**: Array số từ 0-6 (0=Chủ nhật, 1=Thứ 2, ..., 6=Thứ 7)\n     * Nếu áp dụng cho tất cả ngày: [0, 1, 2, 3, 4, 5, 6]\n     * Nếu chỉ ngày thường: [1, 2, 3, 4, 5]\n     * Nếu chỉ cuối tuần: [0, 6]\n     * Nếu không đề cập: để null hoặc [0, 1, 2, 3, 4, 5, 6]\n\n5. **Phụ thu lễ tết**:\n   - Trích xuất CHÍNH XÁC ngày tháng từ tài liệu\n   - Phân biệt Dương lịch và Âm lịch\n   - Ghi rõ % hoặc số tiền cố định\n\n## Lưu ý quan trọng\n\n- **KHÔNG** tự suy đoán thông tin không có trong tài liệu\n- **PHẢI** giữ nguyên đơn vị tiền tệ (VND)\n- **PHẢI** trích xuất đầy đủ tất cả loại phòng và giá phòng cho từng cơ sở, không bỏ sót.\n- **Mỗi file chỉ chứa 1 khách sạn hoặc 1 chuỗi khách sạn**: Nếu là 1 khách sạn → array có 1 phần tử. Nếu là chuỗi (nhiều cơ sở) → array có nhiều phần tử, mỗi phần tử là 1 cơ sở.\n- **Không được gộp các cơ sở chỉ vì trùng tên**: Nếu địa chỉ khác hoặc bảng giá khác biệt, tạo **object riêng** cho từng cơ sở.\n- **Khi là chuỗi khách sạn**: Bắt buộc đặt tên phân biệt từng cơ sở (đánh số hoặc thêm địa chỉ ngắn như ví dụ trên) để tránh trùng lặp.\n- **Nhiều biến thể giá cho cùng room type**: chỉ giữ **một biến thể giá** ứng với giai đoạn đang hiệu lực hoặc gần nhất trong tương lai. Nếu cần phân biệt, thêm hậu tố theo giai đoạn được chọn (vd: \"Deluxe Window - 01/01-30/04\"). Không tách thêm các giai đoạn khác đã hết hạn/xa.\n- **Cùng room_type nhưng khác bed_type và/hoặc giá**: nếu bảng gộp nhiều loại giường với giá khác nhau (vd Double/Twin có giá riêng), tách thành nhiều entry `room_types` riêng biệt, đặt hậu tố phân biệt theo loại giường (vd: \"Deluxe Window - Double\", \"Deluxe Window - Twin\") và giữ đúng giá của từng biến thể.\n\n## Ví dụ xử lý đặc biệt\n\n- \"1.000.000 VND\" → 1000000\n- \"30/04/2025 & 01/05/2025\" → [\"2025-04-30\", \"2025-05-01\"]\n- \"Tháng 4/2025 – Tháng 10/2025\" → months: [4, 5, 6, 7, 8, 9, 10]\n- \"DBL (1m8)\" hoặc \"Double 1m8\" → bed_type: [\"DOUBLE_BED\"], bed_type_description: \"Double 1.8m\"\n- \"TWN (1m2)\" hoặc \"Twin 1m2\" → bed_type: [\"TWIN_BED\"], bed_type_description: \"Twin 1.2m\"\n- \"Trip: 1m6 + 1m2\" → bed_type: [\"TRIPLE_BED\"], bed_type_description: \"Triple: 1 giường 1.6m + 1 giường 1.2m\"\n- \"Double 1m8/Twin 1m2\" → bed_type: [\"DOUBLE_BED\", \"TWIN_BED\"], bed_type_description: \"Double 1.8m/Twin 1.2m\"\n- \"Queen 1m6\" hoặc \"QN 1m6\" → bed_type: [\"QUEEN_BED\"], bed_type_description: \"Queen 1.6m\"\n- \"King 2m\" hoặc \"KG 2m\" → bed_type: [\"KING_BED\"], bed_type_description: \"King 2m\"\n- Có giường phụ → extra_bed.type: \"EXTRA_BED\"\n- Không có giường phụ → extra_bed.type: null (KHÔNG dùng \"NONE\")\n- \"Resort\" hoặc \"Khu nghỉ dưỡng\" → hotel_info.type: \"RESORT\"\n- \"Boutique Hotel\" → hotel_info.type: \"BOUTIQUE\"\n- \"Homestay\" → hotel_info.type: \"HOMESTAY\"\n- \"Motel\" → hotel_info.type: \"MOTEL\"\n- \"Motel Inn\" → hotel_info.type: \"MOTEL_INN\"\n- Không đề cập → hotel_info.type: null (sẽ tự động xử lý)\n\n## Output format\n\n**QUAN TRỌNG**: \n- Chỉ trả về JSON thuần túy, KHÔNG bọc trong markdown code block\n- KHÔNG thêm ```json``` hoặc ``` ở đầu/cuối\n- KHÔNG thêm bất kỳ văn bản giải thích nào\n- Output phải là valid JSON có thể parse trực tiếp bằng JSON.parse()\n\n**SAI**: \n```json\n{\n  \"hotel_info\": {...}\n}\n```\n\n**ĐÚNG**:\n[\n  {\n    \"hotel_info\": {...}\n  }\n]\n\nNếu cần ghi chú, đặt trong trường \"additional_notes\" của JSON.",
+        "inputType": "base64",
+        "options": {
+          "detail": "high",
+          "maxTokens": 16384
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2,
+      "position": [
+        1136,
+        16
+      ],
+      "id": "422e9150-b12d-4c57-94fa-bf534f584b9b",
+      "name": "Analyze image",
+      "credentials": {
+        "openAiApi": {
+          "id": "AWadG9bjWMaCPrVg",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://dev-gateway.hakinet.com/pdf/to-image",
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "parameterType": "formBinaryData",
+              "name": "pdf",
+              "inputDataFieldName": "data"
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {
+              "followRedirects": false
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        864,
+        16
+      ],
+      "id": "abbfde9e-c2a0-4e57-8a75-5c6c789e34d7",
+      "name": "Convert 2 Image"
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "triggerOn": "specificFolder",
+        "folderToWatch": {
+          "__rl": true,
+          "value": "1RACJwUEXxISHltN2ekhtOLVnD8p3wgFL",
+          "mode": "list",
+          "cachedResultName": "FileNeedToTrack",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1RACJwUEXxISHltN2ekhtOLVnD8p3wgFL"
+        },
+        "event": "fileCreated",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDriveTrigger",
+      "typeVersion": 1,
+      "position": [
+        -288,
+        16
+      ],
+      "id": "5cb003bf-026b-4c45-a546-d22debff70de",
+      "name": "New File Uploaded",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "9yLxmdBnWOTxZU3z",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.all();\nreturn JSON.parse(data[0].json[0].content[0].text);\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1408,
+        16
+      ],
+      "id": "57d5cd03-cac7-4861-b562-027fb74865e4",
+      "name": "Data Transform"
+    },
+    {
+      "parameters": {
+        "operation": "move",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "driveId": {
+          "__rl": true,
+          "value": "My Drive",
+          "mode": "list",
+          "cachedResultName": "My Drive",
+          "cachedResultUrl": "https://drive.google.com/drive/my-drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1mVYvS_DA1V0RKJuxKjnEe6waKlqCR_V1",
+          "mode": "list",
+          "cachedResultName": "ProcessedFile",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1mVYvS_DA1V0RKJuxKjnEe6waKlqCR_V1"
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        2480,
+        0
+      ],
+      "id": "86de1bec-1961-4631-b519-403413531972",
+      "name": "Archive File",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "9yLxmdBnWOTxZU3z",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $('MergeSuccess').item.json.id }}",
+          "mode": "id"
+        },
+        "newUpdatedFileName": "={{ $today.format('yyyy-MM-dd')}}-{{ $('MergeSuccess').item.json.originalFilename }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        2672,
+        0
+      ],
+      "id": "12b8723e-6dd7-4e68-9eb5-2655fa283f9a",
+      "name": "Rename archive file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "9yLxmdBnWOTxZU3z",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        -288,
+        -400
+      ],
+      "id": "aa290630-e9fd-418c-b7e2-bf52adba8981",
+      "name": "Error Trigger"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://airvis-api-dev.airdata.site/avis/api/hub/alert",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-api-key",
+              "value": "bixFLoNn1Dg"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "projectName",
+              "value": "N8N"
+            },
+            {
+              "name": "alertMessage",
+              "value": "=Workflow \"{{ $json.workflow.name }}\" ERROR: {{ $json.execution.error.message }}"
+            },
+            {
+              "name": "severity",
+              "value": "CRITICAL"
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {
+              "followRedirects": false
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        256,
+        -400
+      ],
+      "id": "9c0f6670-0940-4605-b203-a41b4997be0e",
+      "name": "Alert Error"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://airvis-api-dev.airdata.site/avis/api/hub/alert",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-api-key",
+              "value": "bixFLoNn1Dg"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "projectName",
+              "value": "WF_HOTEL_RATE_EXTRACTOR"
+            },
+            {
+              "name": "alertMessage",
+              "value": "=File \"{{ $json.name }}\" ERROR!!!"
+            },
+            {
+              "name": "severity",
+              "value": "CRITICAL"
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {
+              "followRedirects": false
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        800,
+        320
+      ],
+      "id": "685e60c5-b5e4-4b3e-b26d-5c1ca9ec9fc9",
+      "name": "Alert process error"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://airvis-api-dev.airdata.site/avis/api/hub/alert",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-api-key",
+              "value": "bixFLoNn1Dg"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "projectName",
+              "value": "WF_HOTEL_RATE_EXTRACTOR"
+            },
+            {
+              "name": "alertMessage",
+              "value": "={{  $('MergeSuccess').item.json.name }} process completed! "
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {
+              "followRedirects": false
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        2848,
+        0
+      ],
+      "id": "38f0f42c-c32e-4d84-9bd8-a40059965608",
+      "name": "Alert process done"
+    },
+    {
+      "parameters": {
+        "jsCode": "// DEV flow onlu\nconst prefix = Date.now() + '-';\n// PROD\n// const prefix = '';\n// Hàm parse bed types - fallback nếu prompt chưa chuẩn hóa\nfunction parseBedTypes(bedTypeInput) {\n  // Nếu đã là array enum (từ prompt mới), trả về trực tiếp\n  if (Array.isArray(bedTypeInput)) {\n    return bedTypeInput.filter((type) =>\n      [\n        \"DOUBLE_BED\",\n        \"TWIN_BED\",\n        \"TRIPLE_BED\",\n        \"QUEEN_BED\",\n        \"KING_BED\",\n      ].includes(type)\n    );\n  }\n\n  // Fallback: parse từ string (cho dữ liệu cũ)\n  if (!bedTypeInput) return [\"DOUBLE_BED\"];\n\n  const str = bedTypeInput.toUpperCase();\n  const bedTypes = [];\n\n  if (str.includes(\"DBL\") || str.includes(\"1M8\") || str.includes(\"DOUBLE\")) {\n    bedTypes.push(\"DOUBLE_BED\");\n  }\n  if (str.includes(\"TWN\") || str.includes(\"1M2\") || str.includes(\"TWIN\")) {\n    bedTypes.push(\"TWIN_BED\");\n  }\n  if (str.includes(\"TRIP\") || str.includes(\"TRIPLE\")) {\n    bedTypes.push(\"TRIPLE_BED\");\n  }\n  if (str.includes(\"QUEEN\") || str.includes(\"QN\") || str.includes(\"1M6\")) {\n    bedTypes.push(\"QUEEN_BED\");\n  }\n  if (str.includes(\"KING\") || str.includes(\"KG\") || str.includes(\"2M\")) {\n    bedTypes.push(\"KING_BED\");\n  }\n\n  return bedTypes.length > 0 ? bedTypes : [\"DOUBLE_BED\"];\n}\n\n// Hàm parse extra bed type - fallback nếu prompt chưa chuẩn hóa\nfunction parseExtraBedType(extraBedInput) {\n  // Nếu không có thông tin, trả về null\n  if (!extraBedInput || extraBedInput === null || extraBedInput === undefined) {\n    return null;\n  }\n\n  // Nếu đã là enum (từ prompt mới), trả về trực tiếp (chỉ EXTRA_BED, không có NONE)\n  if (typeof extraBedInput === \"string\") {\n    if (extraBedInput === \"EXTRA_BED\") {\n      return \"EXTRA_BED\";\n    }\n    // Nếu là \"NONE\" hoặc không hợp lệ, trả về null\n    return null;\n  }\n\n  // Fallback: parse từ object cũ {available: true/false} hoặc {type: \"EXTRA_BED\"}\n  if (typeof extraBedInput === \"object\") {\n    // Nếu có type field\n    if (extraBedInput.type) {\n      return extraBedInput.type === \"EXTRA_BED\" ? \"EXTRA_BED\" : null;\n    }\n    // Nếu có available field\n    if (extraBedInput.hasOwnProperty(\"available\")) {\n      return extraBedInput.available ? \"EXTRA_BED\" : null;\n    }\n  }\n\n  // Không có thông tin rõ ràng, trả về null\n  return null;\n}\n\nfunction convertHotelData(sourceData) {\n  const { hotel_info, room_types, inclusions, surcharges } = sourceData;\n\n  // Chuyển đổi room types\n  const roomPricingData = [];\n  const rooms = room_types.map((room, index) => {\n    // Parse bed types - hỗ trợ cả format mới (array enum) và format cũ (string)\n    const bedTypes = parseBedTypes(room.bed_type);\n\n    // Parse extra bed type - hỗ trợ cả format mới (enum) và format cũ (object với available)\n    const extraBedType = parseExtraBedType(room.extra_bed);\n    const hasExtraBed = extraBedType === \"EXTRA_BED\";\n\n    // Chuẩn hóa view: bỏ giá trị null/\"null\"/rỗng\n    const normalizedView = (() => {\n      const v = room.view;\n      if (v === undefined || v === null) return [];\n      const s = String(v).trim();\n      if (!s || s.toLowerCase() === \"null\") return [];\n      return [s];\n    })();\n\n    // Xác định có bao gồm bữa sáng dựa trên inclusions\n    const breakfastIncluded = (() => {\n      const inc =\n        Array.isArray(inclusions) && inclusions.length > 0\n          ? inclusions.join(\" \").toLowerCase()\n          : \"\";\n      return (\n        inc.includes(\"breakfast\") ||\n        inc.includes(\"sáng\") ||\n        inc.includes(\"ăn sáng\")\n      );\n    })();\n\n    // Lấy bed size description từ bed_type_description hoặc bed_type (fallback)\n    const bedSize =\n      room.bed_type_description ||\n      (typeof room.bed_type === \"string\" ? room.bed_type : \"\") ||\n      \"\";\n\n    // Tạo object room, chỉ thêm extraBedType nếu có giá trị (không null)\n    const roomObj = {\n      code: `${room.room_type.replace(/\\s+/g, \"_\").toUpperCase()}_${index + 1}`,\n      globalName: room.room_type,\n      localName: room.room_type,\n      bedTypes: bedTypes,\n      bedSize: bedSize,\n      area: parseInt(room.room_size) || 0,\n      view: normalizedView,\n      isSmokingAllowed: false,\n      isBreakfastIncluded: breakfastIncluded,\n      // bathroomType: \"PRIVATE\",\n      maxExtraBeds: hasExtraBed ? 1 : 0,\n      maxCapacity: room.capacity.total + (hasExtraBed ? 1 : 0),\n      maxAdultCapacity: room.capacity.adults + (hasExtraBed ? 1 : 0),\n      maxChildrenCapacity: room.capacity.children,\n      maxAdults: room.capacity.adults,\n      maxChildren: room.capacity.children,\n      // childrenAgeRange: \"0-11 tuổi\",\n      // freeChildrenAgeDescription: \"Trẻ em 0-5 tuổi miễn phí\",\n      description: \"\",\n      keyFeatures: [],\n      prices: [],\n    };\n\n    // Chỉ thêm extraBedType nếu có giá trị (không null)\n    if (extraBedType !== null) {\n      roomObj.extraBedType = extraBedType;\n    }\n\n    // Lưu lại thông tin pricing kèm code phòng để cấu hình giá sau\n    roomPricingData.push({\n      code: roomObj.code,\n      pricing: room.pricing || {},\n    });\n\n    return roomObj;\n  });\n\n  // Map nhanh room theo code để cấu hình giá vào đúng phòng\n  const roomMap = rooms.reduce((acc, r) => {\n    acc[r.code] = r;\n    return acc;\n  }, {});\n\n  // Hàm xác định day.name và dayOfWeek dựa trên thông tin từ prompt\n  function parseDayInfo(dayOfWeekInput) {\n    // Nếu không có thông tin, mặc định áp dụng cho tất cả ngày\n    if (!dayOfWeekInput || dayOfWeekInput.length === 0) {\n      return {\n        weekday: { name: \"WEEKDAY\", dayOfWeek: [0, 1, 2, 3, 4] },\n        weekend: { name: \"WEEKEND\", dayOfWeek: [5, 6] },\n      };\n    }\n\n    // Nếu đã có dayOfWeek từ prompt, sử dụng trực tiếp\n    const dayOfWeek = Array.isArray(dayOfWeekInput) ? dayOfWeekInput : [];\n\n    // Phân loại thành WEEKDAY và WEEKEND\n    const weekdayDays = dayOfWeek.filter((d) => d >= 0 && d <= 4);\n    const weekendDays = dayOfWeek.filter((d) => d >= 5 && d <= 6);\n\n    const result = {};\n\n    if (weekdayDays.length > 0) {\n      result.weekday = { name: \"WEEKDAY\", dayOfWeek: weekdayDays };\n    }\n\n    if (weekendDays.length > 0) {\n      result.weekend = { name: \"WEEKEND\", dayOfWeek: weekendDays };\n    }\n\n    // Nếu không có cả hai, mặc định tạo cả hai\n    if (!result.weekday && !result.weekend) {\n      return {\n        weekday: { name: \"WEEKDAY\", dayOfWeek: [0, 1, 2, 3, 4] },\n        weekend: { name: \"WEEKEND\", dayOfWeek: [5, 6] },\n      };\n    }\n\n    return result;\n  }\n\n  // Hàm tính toán periods từ months và validity_period\n  function calculatePeriodsFromMonths(months, validityPeriod) {\n    if (!months || months.length === 0) return [];\n\n    const validityStart = validityPeriod?.start_date;\n    const validityEnd = validityPeriod?.end_date;\n\n    if (!validityStart) {\n      // Fallback: sử dụng năm hiện tại\n      const currentYear = new Date().getFullYear();\n      const firstMonth = Math.min(...months);\n      const lastMonth = Math.max(...months);\n      const lastDay = new Date(currentYear, lastMonth, 0).getDate();\n\n      return [\n        {\n          startDate: `${currentYear}-${String(firstMonth).padStart(\n            2,\n            \"0\"\n          )}-01T00:00:00Z`,\n          endDate: `${currentYear}-${String(lastMonth).padStart(\n            2,\n            \"0\"\n          )}-${String(lastDay).padStart(2, \"0\")}T23:59:59Z`,\n        },\n      ];\n    }\n\n    // Parse start date để lấy năm\n    const startDate = new Date(validityStart);\n    const startYear = startDate.getFullYear();\n\n    // Sắp xếp months\n    const sortedMonths = [...months].sort((a, b) => a - b);\n    const firstMonth = sortedMonths[0];\n    const lastMonth = sortedMonths[sortedMonths.length - 1];\n\n    // Xác định năm kết thúc (nếu tháng cuối < tháng đầu thì là năm sau)\n    let endYear = startYear;\n    if (lastMonth < firstMonth && sortedMonths.length > 1) {\n      endYear = startYear + 1;\n    }\n\n    // Tính ngày cuối của tháng cuối\n    const lastDay = new Date(endYear, lastMonth, 0).getDate();\n\n    // Nếu có validity_end và không phải \"until_further_notice\", sử dụng nó\n    let endDateStr = `${endYear}-${String(lastMonth).padStart(2, \"0\")}-${String(\n      lastDay\n    ).padStart(2, \"0\")}T23:59:59Z`;\n    if (validityEnd && validityEnd !== \"until_further_notice\") {\n      endDateStr = `${validityEnd}T23:59:59Z`;\n    }\n\n    return [\n      {\n        startDate: `${startYear}-${String(firstMonth).padStart(\n          2,\n          \"0\"\n        )}-01T00:00:00Z`,\n        endDate: endDateStr,\n      },\n    ];\n  }\n\n  // Chuyển đổi seasons từ pricing\n  const seasons = [];\n  const validityPeriod = sourceData.validity_period || {};\n\n  // Lấy pricing mẫu (giả định áp dụng chung cho các room; nếu khác nhau sẽ dùng priceConfigs ở dưới)\n  // Ưu tiên phòng đầu tiên có trường pricing để làm anchor\n  const sampleRoom =\n    room_types.find((r) => r && r.pricing) || room_types[0] || {};\n\n  // Low season\n  if (sampleRoom?.pricing?.low_season) {\n    const lowSeasonMonths = sampleRoom.pricing.low_season.months || [];\n    const periods = calculatePeriodsFromMonths(lowSeasonMonths, validityPeriod);\n    const dayInfo = parseDayInfo(sampleRoom.pricing.low_season.dayOfWeek);\n\n    if (periods.length > 0) {\n      // Tạo season cho WEEKDAY nếu có\n      if (dayInfo.weekday) {\n        seasons.push({\n          name: \"Mùa thấp điểm - Ngày thường\",\n          type: \"SEASON\",\n          season: \"LOW\",\n          day: dayInfo.weekday,\n          eventData: null,\n          periods: periods,\n          description:\n            sampleRoom.pricing.low_season.period || \"Mùa thấp điểm\",\n          createdBy: \"system\",\n        });\n      }\n\n      // Tạo season cho WEEKEND nếu có\n      if (dayInfo.weekend) {\n        seasons.push({\n          name: \"Mùa thấp điểm - Cuối tuần\",\n          type: \"SEASON\",\n          season: \"LOW\",\n          day: dayInfo.weekend,\n          eventData: null,\n          periods: periods,\n          description:\n            sampleRoom.pricing.low_season.period || \"Mùa thấp điểm\",\n          createdBy: \"system\",\n        });\n      }\n    }\n  }\n\n  // High season\n  if (sampleRoom?.pricing?.high_season) {\n    const highSeasonMonths = sampleRoom.pricing.high_season.months || [];\n    const periods = calculatePeriodsFromMonths(\n      highSeasonMonths,\n      validityPeriod\n    );\n    const dayInfo = parseDayInfo(sampleRoom.pricing.high_season.dayOfWeek);\n\n    if (periods.length > 0) {\n      // Tạo season cho WEEKDAY nếu có\n      if (dayInfo.weekday) {\n        seasons.push({\n          name: \"Mùa cao điểm - Ngày thường\",\n          type: \"SEASON\",\n          season: \"HIGH\",\n          day: dayInfo.weekday,\n          eventData: null,\n          periods: periods,\n          description:\n            sampleRoom.pricing.high_season.period || \"Mùa cao điểm\",\n          createdBy: \"system\",\n        });\n      }\n\n      // Tạo season cho WEEKEND nếu có\n      if (dayInfo.weekend) {\n        seasons.push({\n          name: \"Mùa cao điểm - Cuối tuần\",\n          type: \"SEASON\",\n          season: \"HIGH\",\n          day: dayInfo.weekend,\n          eventData: null,\n          periods: periods,\n          description:\n            sampleRoom.pricing.high_season.period || \"Mùa cao điểm\",\n          createdBy: \"system\",\n        });\n      }\n    }\n  }\n\n  // Peak season (nếu có)\n  if (\n    sampleRoom?.pricing?.peak_season &&\n    sampleRoom.pricing.peak_season.price &&\n    sampleRoom.pricing.peak_season.months &&\n    sampleRoom.pricing.peak_season.months.length > 0\n  ) {\n    const peakSeasonMonths = sampleRoom.pricing.peak_season.months;\n    const periods = calculatePeriodsFromMonths(\n      peakSeasonMonths,\n      validityPeriod\n    );\n    const dayInfo = parseDayInfo(sampleRoom.pricing.peak_season.dayOfWeek);\n\n    if (periods.length > 0) {\n      // Tạo season cho WEEKDAY nếu có\n      if (dayInfo.weekday) {\n        seasons.push({\n          name: \"Mùa cao điểm đặc biệt - Ngày thường\",\n          type: \"SEASON\",\n          season: \"PEAK\",\n          day: dayInfo.weekday,\n          eventData: null,\n          periods: periods,\n          description:\n            sampleRoom.pricing.peak_season.period || \"Mùa cao điểm đặc biệt\",\n          createdBy: \"system\",\n        });\n      }\n\n      // Tạo season cho WEEKEND nếu có\n      if (dayInfo.weekend) {\n        seasons.push({\n          name: \"Mùa cao điểm đặc biệt - Cuối tuần\",\n          type: \"SEASON\",\n          season: \"PEAK\",\n          day: dayInfo.weekend,\n          eventData: null,\n          periods: periods,\n          description:\n            sampleRoom.pricing.peak_season.period || \"Mùa cao điểm đặc biệt\",\n          createdBy: \"system\",\n        });\n      }\n    }\n  }\n\n  // Holiday surcharges - EVENT type\n  if (surcharges?.holiday_surcharge?.applicable_dates) {\n    surcharges.holiday_surcharge.applicable_dates.forEach((holiday) => {\n      if (holiday.dates) {\n        holiday.dates.forEach((date) => {\n          // Với EVENT, xác định ngày trong tuần của date đó\n          const eventDate = new Date(date);\n          const dayOfWeek = eventDate.getDay(); // 0=Chủ nhật, 1=Thứ 2, ..., 6=Thứ 7\n\n          // Xác định là WEEKDAY hay WEEKEND\n          const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;\n          const dayName = isWeekend ? \"WEEKEND\" : \"WEEKDAY\";\n\n          seasons.push({\n            name: holiday.name,\n            type: \"EVENT\",\n            season: \"PEAK\",\n            day: {\n              name: dayName,\n              dayOfWeek: [dayOfWeek],\n            },\n            eventData: {\n              name: holiday.name,\n              startDate: `${date}T00:00:00Z`,\n              endDate: `${date}T23:59:59Z`,\n              description: `Phụ thu ${surcharges.holiday_surcharge.rate}`,\n            },\n            periods: [\n              {\n                startDate: `${date}T00:00:00Z`,\n                endDate: `${date}T23:59:59Z`,\n              },\n            ],\n            description: `${holiday.name} - Phụ thu ${surcharges.holiday_surcharge.rate}`,\n            createdBy: \"system\",\n          });\n        });\n      } else if (holiday.start_date && holiday.end_date) {\n        // Với range date, tạo cho cả WEEKDAY và WEEKEND\n        const startDate = new Date(holiday.start_date);\n        const endDate = new Date(holiday.end_date);\n\n        // Tạo event cho WEEKDAY\n        const weekdayDays = [];\n        const weekendDays = [];\n\n        // Tính toán các ngày trong range\n        const currentDate = new Date(startDate);\n        while (currentDate <= endDate) {\n          const dayOfWeek = currentDate.getDay();\n          if (dayOfWeek === 0 || dayOfWeek === 6) {\n            if (!weekendDays.includes(dayOfWeek)) {\n              weekendDays.push(dayOfWeek);\n            }\n          } else {\n            if (!weekdayDays.includes(dayOfWeek)) {\n              weekdayDays.push(dayOfWeek);\n            }\n          }\n          currentDate.setDate(currentDate.getDate() + 1);\n        }\n\n        // Tạo season cho WEEKDAY nếu có\n        if (weekdayDays.length > 0) {\n          seasons.push({\n            name: holiday.name,\n            type: \"EVENT\",\n            season: \"PEAK\",\n            day: {\n              name: \"WEEKDAY\",\n              dayOfWeek: weekdayDays,\n            },\n            eventData: {\n              name: holiday.name,\n              startDate: `${holiday.start_date}T00:00:00Z`,\n              endDate: `${holiday.end_date}T23:59:59Z`,\n              description: `Phụ thu ${surcharges.holiday_surcharge.rate}`,\n            },\n            periods: [\n              {\n                startDate: `${holiday.start_date}T00:00:00Z`,\n                endDate: `${holiday.end_date}T23:59:59Z`,\n              },\n            ],\n            description: `${holiday.name} - Phụ thu ${surcharges.holiday_surcharge.rate}`,\n            createdBy: \"system\",\n          });\n        }\n\n        // Tạo season cho WEEKEND nếu có\n        if (weekendDays.length > 0) {\n          seasons.push({\n            name: holiday.name,\n            type: \"EVENT\",\n            season: \"PEAK\",\n            day: {\n              name: \"WEEKEND\",\n              dayOfWeek: weekendDays,\n            },\n            eventData: {\n              name: holiday.name,\n              startDate: `${holiday.start_date}T00:00:00Z`,\n              endDate: `${holiday.end_date}T23:59:59Z`,\n              description: `Phụ thu ${surcharges.holiday_surcharge.rate}`,\n            },\n            periods: [\n              {\n                startDate: `${holiday.start_date}T00:00:00Z`,\n                endDate: `${holiday.end_date}T23:59:59Z`,\n              },\n            ],\n            description: `${holiday.name} - Phụ thu ${surcharges.holiday_surcharge.rate}`,\n            createdBy: \"system\",\n          });\n        }\n      }\n    });\n  }\n\n  // Map season name theo season/day để cấu hình giá\n  const seasonNameIndex = seasons.reduce((acc, s) => {\n    const key = `${s.season}_${s.day?.name || \"ALL\"}`;\n    if (!acc[key]) acc[key] = [];\n    acc[key].push(s.name);\n    return acc;\n  }, {});\n\n  // Lưu meta season để đưa periods/dayType vào giá phòng\n  const seasonMeta = seasons.reduce((acc, s) => {\n    acc[s.name] = {\n      periods: s.periods || [],\n      dayType: s.day?.name || \"WEEKDAY\",\n    };\n    return acc;\n  }, {});\n\n  // Enum defaults & allowed sets (fallback khi thiếu thông tin)\n  const enumDefaults = {\n    unitType: \"FIXED_AMOUNT\", // PERCENTAGE | FIXED_AMOUNT\n    cancellationPeriodUnitTime: \"DAY\", // DAY | HOUR\n    condition: \"FREE_CANCELLATION\", // FREE_CANCELLATION | CANCELLATION_CHARGE | NO_CANCELLATION\n    mealPlan: \"RO\", // RO, BB, HB, FB, AI, UAI, CP, MAP, AP, EP, BFI, BFLI, BFDI, AMI, AMD, FBD, KEF, STTI\n    dayType: \"WEEKDAY\", // WEEKDAY | WEEKEND\n  };\n\n  const enumSets = {\n    unitType: [\"PERCENTAGE\", \"FIXED_AMOUNT\"],\n    cancellationPeriodUnitTime: [\"DAY\", \"HOUR\"],\n    condition: [\"FREE_CANCELLATION\", \"CANCELLATION_CHARGE\", \"NO_CANCELLATION\"],\n    mealPlan: [\n      \"RO\",\n      \"BB\",\n      \"HB\",\n      \"FB\",\n      \"AI\",\n      \"UAI\",\n      \"CP\",\n      \"MAP\",\n      \"AP\",\n      \"EP\",\n      \"BFI\",\n      \"BFLI\",\n      \"BFDI\",\n      \"AMI\",\n      \"AMD\",\n      \"FBD\",\n      \"KEF\",\n      \"STTI\",\n    ],\n    dayType: [\"WEEKDAY\", \"WEEKEND\"],\n  };\n\n  function pickEnum(value, type) {\n    const allowed = enumSets[type] || [];\n    if (allowed.includes(value)) return value;\n    return enumDefaults[type];\n  }\n\n  // Hàm helper để đẩy giá theo season\n  function pushPriceToRoom(roomCode, seasonKey, price) {\n    if (!price || price === null || price === undefined) return;\n    const seasonNames = seasonNameIndex[seasonKey] || [];\n    seasonNames.forEach((name) => {\n      const room = roomMap[roomCode];\n      if (!room) return;\n      const meta = seasonMeta[name] || {};\n      // Cho phép price là number hoặc object có metadata\n      const priceValue =\n        typeof price === \"object\" && price !== null ? price.price : price;\n      const mealPlan =\n        typeof price === \"object\" && price !== null\n          ? pickEnum(price.mealPlan, \"mealPlan\")\n          : enumDefaults.mealPlan;\n      const condition =\n        typeof price === \"object\" && price !== null\n          ? pickEnum(price.condition, \"condition\")\n          : enumDefaults.condition;\n      const cancellationPeriod =\n        typeof price === \"object\" && price !== null\n          ? Number(price.cancellationPeriod) || 0\n          : 0;\n      const cancellationPeriodUnitTime =\n        typeof price === \"object\" && price !== null\n          ? pickEnum(price.cancellationPeriodUnitTime, \"cancellationPeriodUnitTime\")\n          : enumDefaults.cancellationPeriodUnitTime;\n      const unitType =\n        typeof price === \"object\" && price !== null\n          ? pickEnum(price.unitType, \"unitType\")\n          : enumDefaults.unitType;\n      const amount =\n        typeof price === \"object\" && price !== null\n          ? Number(price.amount) || 0\n          : 0;\n      room.prices.push({\n        mealPlan,\n        countries: [],\n        price: Number(priceValue) || 0,\n        seasonName: name,\n        periods: meta.periods,\n        condition,\n        cancellationPeriod,\n        cancellationPeriodUnitTime,\n        unitType,\n        amount,\n        dayType: pickEnum(meta.dayType, \"dayType\"),\n      });\n    });\n  }\n\n  // Tạo prices cho từng phòng (nằm trong rooms)\n  roomPricingData.forEach(({ code, pricing }) => {\n    if (pricing?.low_season) {\n      pushPriceToRoom(code, \"LOW_WEEKDAY\", pricing.low_season.price);\n      pushPriceToRoom(code, \"LOW_WEEKEND\", pricing.low_season.price);\n    }\n    if (pricing?.high_season) {\n      pushPriceToRoom(code, \"HIGH_WEEKDAY\", pricing.high_season.price);\n      pushPriceToRoom(code, \"HIGH_WEEKEND\", pricing.high_season.price);\n    }\n    if (pricing?.peak_season) {\n      pushPriceToRoom(code, \"PEAK_WEEKDAY\", pricing.peak_season.price);\n      pushPriceToRoom(code, \"PEAK_WEEKEND\", pricing.peak_season.price);\n    }\n  });\n\n  // Xác định type của khách sạn\n  let hotelType = hotel_info.type;\n\n  // Nếu không có type từ prompt, xử lý tự động dựa trên số sao\n  if (!hotelType || hotelType === null || hotelType === undefined) {\n    const starRating = parseInt(hotel_info.rating) || 0;\n    // >= 3 sao thì mặc định là RESORT\n    hotelType = starRating >= 3 ? \"RESORT\" : \"HOTEL\";\n  }\n\n  // Validate enum type\n  const validTypes = [\n    \"HOTEL\",\n    \"MOTEL\",\n    \"MOTEL_INN\",\n    \"RESORT\",\n    \"BOUTIQUE\",\n    \"HOMESTAY\",\n  ];\n  if (!validTypes.includes(hotelType)) {\n    // Nếu type không hợp lệ, fallback về logic số sao\n    const starRating = parseInt(hotel_info.rating) || 0;\n    hotelType = starRating >= 3 ? \"RESORT\" : \"HOTEL\";\n  }\n\n  // Tạo object kết quả\n  const result = {\n    localName: prefix + hotel_info.name,\n    globalName: prefix + hotel_info.name,\n    type: hotelType,\n    address: hotel_info.address,\n    star: hotel_info.rating?.toString() || '1',\n    serviceScope: \"LOCAL\",\n    //   checkInHouse: \"14:00\",\n    //   checkOutHouse: \"12:00\",\n    area: hotel_info.location,\n    //   lat: 0,\n    //   lng: 0,\n    //   image: 0,\n    //   nearbyAttractions: [],\n    keyFeatures: inclusions || [],\n    code: prefix + hotel_info.name.replace(/\\s+/g, \"_\").toUpperCase(),\n    // bank_details: removed per prompt\n    // contact_person: removed per prompt\n    //   source: \"ACP\",\n    //   wardId: 0,\n    seasons: seasons,\n    rooms: rooms,\n  };\n\n  return result;\n}\n//const rawData = input[0];\nconst rawData = $input.all()[0].json;\nconst result = convertHotelData(rawData);\n//console.log(result);\nreturn result;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1664,
+        16
+      ],
+      "id": "ae40ad80-fe73-4442-8b83-a8dbdec9e026",
+      "name": "Convert to AirData input"
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "queryString": "=pdf",
+        "limit": 1,
+        "filter": {
+          "folderId": {
+            "__rl": true,
+            "value": "1RACJwUEXxISHltN2ekhtOLVnD8p3wgFL",
+            "mode": "list",
+            "cachedResultName": "FileNeedToTrack",
+            "cachedResultUrl": "https://drive.google.com/drive/folders/1RACJwUEXxISHltN2ekhtOLVnD8p3wgFL"
+          }
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -96,
+        -176
+      ],
+      "id": "877966ba-b26f-4ed2-affb-c6107df2e02f",
+      "name": "Search files and folders",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "9yLxmdBnWOTxZU3z",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -288,
+        -176
+      ],
+      "id": "b1d253b8-86db-467d-8006-657297ac892d",
+      "name": "Schedule Trigger",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://acp-hotel-svc-dev.airdata.site:443/ahsa/api/import/hotels",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-api-key",
+              "value": "MIGRATE_DATA_APIKEY"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1920,
+        16
+      ],
+      "id": "d29787df-bf5e-4d03-bad5-39c7ce99d4f6",
+      "name": "Insert tp AirData",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "mode": "chooseBranch"
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        2240,
+        -112
+      ],
+      "id": "8c613f5c-b135-475c-80d8-5e3461ffd658",
+      "name": "MergeSuccess"
+    },
+    {
+      "parameters": {
+        "mode": "chooseBranch",
+        "useDataOfInput": 2
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        2240,
+        144
+      ],
+      "id": "ee0f65a0-10eb-4151-b41f-1bc6a8caea1e",
+      "name": "MergeFail"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "d4c99a6a-fe33-467f-aac0-b1d1dcc6a767",
+              "leftValue": "={{ $json.fullFileExtension }}",
+              "rightValue": "pdf",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        608,
+        16
+      ],
+      "id": "dd4b3483-96d0-4a2a-a5e5-5580a359e55e",
+      "name": "Check if pdf"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Download file",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "MergeSuccess",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "MergeFail",
+            "type": "main",
+            "index": 1
+          }
+        ],
+        [
+          {
+            "node": "Alert process error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download file": {
+      "main": [
+        [
+          {
+            "node": "Check if pdf",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze image": {
+      "main": [
+        [
+          {
+            "node": "Data Transform",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert 2 Image": {
+      "main": [
+        [
+          {
+            "node": "Analyze image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "New File Uploaded": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Data Transform": {
+      "main": [
+        [
+          {
+            "node": "Convert to AirData input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Archive File": {
+      "main": [
+        [
+          {
+            "node": "Rename archive file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Rename archive file": {
+      "main": [
+        [
+          {
+            "node": "Alert process done",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Error Trigger": {
+      "main": [
+        [
+          {
+            "node": "Alert Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to AirData input": {
+      "main": [
+        [
+          {
+            "node": "Insert tp AirData",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search files and folders": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Search files and folders",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Alert process error": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Alert process done": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert tp AirData": {
+      "main": [
+        [
+          {
+            "node": "MergeSuccess",
+            "type": "main",
+            "index": 1
+          }
+        ],
+        [
+          {
+            "node": "MergeFail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MergeSuccess": {
+      "main": [
+        [
+          {
+            "node": "Archive File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MergeFail": {
+      "main": [
+        [
+          {
+            "node": "Alert process error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check if pdf": {
+      "main": [
+        [
+          {
+            "node": "Convert 2 Image",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Analyze image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Asia/Singapore",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false,
+    "errorWorkflow": "LQOic18y3ChoqPSw"
+  },
+  "versionId": "a32fd498-9a2b-4373-b4ba-68eae2ebfbfb",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "156b4847ea3d6cfbe549af4a071a341a0cce05a20c9834c9e89cd8266c3a594e"
+  },
+  "id": "LQOic18y3ChoqPSw",
+  "tags": []
+}
