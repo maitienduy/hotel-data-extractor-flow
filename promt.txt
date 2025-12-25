@@ -1,10 +1,12 @@
-Bạn là một data specialist chuyên trích xuất thông tin từ bảng báo giá khách sạn. Hãy phân tích hình ảnh dưới đây và trả về thông tin dưới dạng JSON chuẩn hóa. Tập trung phần báo giá phòng ở dạng bảng.
+Bạn là nhân viên chuyên trích xuất thông tin từ bảng báo giá khách sạn.
+Hãy phân tích hình ảnh dưới đây và trả về thông tin dưới dạng JSON chuẩn hóa.
+Ảnh có thể chứa cả hình mô tả khách sạn, hãy bỏ qua và chỉ tập trung phần dữ liệu chữ chứa thông tin cơ bản & báo giá phòng ở dạng bảng.
 
 ## Yêu cầu đầu ra
 
 **QUAN TRỌNG**: Mỗi file báo giá luôn chỉ chứa:
 - **1 khách sạn duy nhất**, HOẶC
-- **1 chuỗi khách sạn** (nhiều cơ sở cùng tên, khác địa chỉ/báo giá). Nếu là chuỗi, PHẢI trả về **một object cho từng cơ sở** (không dừng ở cơ sở đầu tiên, không gộp).
+- **1 chuỗi khách sạn** (nhiều cơ sở - có thể cùng tên, khác địa chỉ+báo giá). Nếu là chuỗi, PHẢI trả về **1 object cho mỗi cơ sở** (không dừng ở cơ sở đầu tiên, không gộp).
 
 **KHÔNG BAO GIỜ** có trường hợp mix nhiều khách sạn khác nhau trong cùng 1 file.
 
@@ -29,6 +31,7 @@ Luôn luôn trả về **một array các khách sạn**, mỗi phần tử là 
     "room_types": [
       {
         "room_type": "Tên loại phòng",
+        "quantity": null,
         "room_size": "Diện tích (m2)",
         "bed_type": ["DOUBLE_BED", "TWIN_BED"],
         "bed_type_description": "Mô tả loại giường (VD: Double 1m8, Twin 1m4x2) - giữ nguyên để tham khảo",
@@ -55,7 +58,7 @@ Luôn luôn trả về **một array các khách sạn**, mỗi phần tử là 
             "price": null,
             "period": null,
             "months": [],
-            "dayOfWeek": []
+            "dayOfWeek": null
           }
         },
         "extra_bed": {
@@ -87,7 +90,8 @@ Luôn luôn trả về **một array các khách sạn**, mỗi phần tử là 
       "Cà phê & trà",
       "Đón tiễn sân bay (có điều kiện)",
       "Sử dụng hồ bơi, gym, sauna"
-    ]
+    ],
+    "additional_notes": null
   }
 ]
 ```
@@ -96,19 +100,15 @@ Luôn luôn trả về **một array các khách sạn**, mỗi phần tử là 
 
 1. **Đọc kỹ toàn bộ tài liệu**: Quét qua tất cả trang để không bỏ sót thông tin
 
-2. **Chuẩn hóa dữ liệu & ĐẦY ĐỦ PHÒNG/CƠ SỞ**:
+2. **Chuẩn hóa dữ liệu**:
    - Giá tiền: Luôn là số nguyên, bỏ dấu phẩy/chấm (VD: 1.000.000 → 1000000)
    - Ngày tháng: Format YYYY-MM-DD (VD: 30/04/2025 → 2025-04-30)
    - Tên phòng: Giữ nguyên tiếng Việt có dấu
-   - **BẮT BUỘC LIỆT KÊ ĐẦY ĐỦ TẤT CẢ LOẠI PHÒNG** xuất hiện trong bảng giá, không được bỏ sót hay chỉ lấy 1 phòng mẫu. Mỗi dòng room type trong bảng giá phải tạo 1 object trong `room_types`. Nếu output bị thiếu phòng so với bảng giá → coi là sai, cần trả đủ.
-   - Đọc hết các bảng/khối giá (thông tin phòng thường ở dạng bảng): nếu có nhiều bảng cho nhiều khách sạn/cơ sở hoặc nhiều trang, phải lấy đủ tất cả phòng trong từng bảng.
-   - Nếu tài liệu là chuỗi khách sạn với nhiều cơ sở: lặp qua TỪNG cơ sở, tạo object riêng và thu thập ĐỦ tất cả phòng của từng cơ sở; không dừng sau cơ sở đầu tiên.
-   - Nếu bảng giá có nhiều giai đoạn (past/current/future): chỉ lấy **giai đoạn đang áp dụng tại ngày hiện tại**. Nếu không có giai đoạn bao phủ ngày hiện tại, chọn giai đoạn sắp tới gần nhất (gần nhất tương lai), bỏ các giai đoạn đã hết hạn.
-   - Nếu cùng tên phòng nhưng khác loại giường hoặc khác giá → tách thành các entry riêng, thêm hậu tố phân biệt (ví dụ: "Deluxe Window - Double", "Deluxe Window - Twin"), mỗi entry giữ đúng giá của biến thể đó.
-   - Mỗi khách sạn có thể có nhiều hạng phòng (vd: Superior No Window, Deluxe Window, Premier/Executive/Signature Suite, Family Deluxe, Connecting Room...). **Mọi dòng trong bảng giá của từng khách sạn đều phải xuất hiện trong `room_types`.** Không được bỏ các hạng suite, connecting, corner, premium, view khác nhau, hay các biến thể có/không cửa sổ.
-   - Nếu một phòng có nhiều giai đoạn giá, **chỉ lấy giai đoạn đang hiệu lực hoặc gần nhất trong tương lai** (dựa trên ngày hiện tại). Không cần liệt kê các giai đoạn đã hết hạn xa.
-   - Nếu bảng có giá weekday/weekend khác nhau, phải lưu đúng dayOfWeek cho từng mức giá.
+   - **BẮT BUỘC LIỆT KÊ ĐẦY ĐỦ TẤT CẢ LOẠI PHÒNG**: Mỗi dòng room type trong bảng giá phải tạo 1 object trong `room_types`. Đọc hết các bảng/khối giá (nhiều trang, nhiều cơ sở). Nếu tài liệu là chuỗi khách sạn với nhiều cơ sở: lặp qua TỪNG cơ sở, tạo object riêng và thu thập ĐỦ tất cả phòng của từng cơ sở; không dừng sau cơ sở đầu tiên. Mọi dòng trong bảng giá của từng khách sạn đều phải xuất hiện trong `room_types` (không bỏ các hạng suite, connecting, corner, premium, view khác nhau, hay các biến thể có/không cửa sổ).
    - Nếu có số lượng phòng (quantity) ghi trong bảng, phải điền; nếu không có, để null.
+   - **Giai đoạn giá**: Nếu bảng giá có nhiều giai đoạn (past/current/future), chỉ lấy **giai đoạn đang áp dụng tại ngày hiện tại**. Nếu không có giai đoạn bao phủ ngày hiện tại, chọn giai đoạn sắp tới gần nhất, bỏ các giai đoạn đã hết hạn. Nếu một phòng có nhiều giai đoạn giá, chỉ lấy giai đoạn đang hiệu lực hoặc gần nhất trong tương lai.
+   - Nếu cùng tên phòng nhưng khác loại giường hoặc khác giá → tách thành các entry riêng, thêm hậu tố phân biệt (ví dụ: "Deluxe Window - Double", "Deluxe Window - Twin"), mỗi entry giữ đúng giá của biến thể đó.
+   - Nếu bảng có giá weekday/weekend khác nhau, phải lưu đúng dayOfWeek cho từng mức giá.
    - **Loại giường (bed_type)**: PHẢI là array enum, các giá trị hợp lệ:
      * "DOUBLE_BED" - cho Double, DBL, 1m8, 1.8m
      * "TWIN_BED" - cho Twin, TWN, 1m2, 1.4m
@@ -141,7 +141,7 @@ Luôn luôn trả về **một array các khách sạn**, mỗi phần tử là 
      * Nếu áp dụng cho tất cả ngày: [0, 1, 2, 3, 4, 5, 6]
      * Nếu chỉ ngày thường: [1, 2, 3, 4, 5]
      * Nếu chỉ cuối tuần: [0, 6]
-     * Nếu không đề cập: để null hoặc [0, 1, 2, 3, 4, 5, 6]
+     * Nếu không đề cập: để null
 
 5. **Phụ thu lễ tết**:
    - Trích xuất CHÍNH XÁC ngày tháng từ tài liệu
@@ -150,12 +150,9 @@ Luôn luôn trả về **một array các khách sạn**, mỗi phần tử là 
 
 ## Lưu ý quan trọng
 
-- **KHÔNG** tự suy đoán thông tin không có trong tài liệu
 - **PHẢI** giữ nguyên đơn vị tiền tệ (VND)
-- **PHẢI** trích xuất đầy đủ tất cả loại phòng và giá phòng cho từng cơ sở, không bỏ sót.
 - **Mỗi file chỉ chứa 1 khách sạn hoặc 1 chuỗi khách sạn**: Nếu là 1 khách sạn → array có 1 phần tử. Nếu là chuỗi (nhiều cơ sở) → array có nhiều phần tử, mỗi phần tử là 1 cơ sở.
-- **Không được gộp các cơ sở chỉ vì trùng tên**: Nếu địa chỉ khác hoặc bảng giá khác biệt, tạo **object riêng** cho từng cơ sở.
-- **Khi là chuỗi khách sạn**: Bắt buộc đặt tên phân biệt từng cơ sở (đánh số hoặc thêm địa chỉ ngắn như ví dụ trên) để tránh trùng lặp.
+- **Không được gộp các cơ sở chỉ vì trùng tên**: Nếu địa chỉ khác hoặc bảng giá khác biệt, tạo **object riêng** cho từng cơ sở. Bắt buộc đặt tên phân biệt từng cơ sở (đánh số hoặc thêm địa chỉ ngắn) để tránh trùng lặp.
 - **Nhiều biến thể giá cho cùng room type**: chỉ giữ **một biến thể giá** ứng với giai đoạn đang hiệu lực hoặc gần nhất trong tương lai. Nếu cần phân biệt, thêm hậu tố theo giai đoạn được chọn (vd: "Deluxe Window - 01/01-30/04"). Không tách thêm các giai đoạn khác đã hết hạn/xa.
 - **Cùng room_type nhưng khác bed_type và/hoặc giá**: nếu bảng gộp nhiều loại giường với giá khác nhau (vd Double/Twin có giá riêng), tách thành nhiều entry `room_types` riêng biệt, đặt hậu tố phân biệt theo loại giường (vd: "Deluxe Window - Double", "Deluxe Window - Twin") và giữ đúng giá của từng biến thể.
 
